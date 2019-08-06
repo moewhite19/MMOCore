@@ -1,0 +1,33 @@
+package cn.whiteg.mmocore.commands.userDataCommands;
+
+import cn.whiteg.mmocore.CommandInterface;
+import cn.whiteg.mmocore.DataCon;
+import cn.whiteg.mmocore.MMOCore;
+import cn.whiteg.mmocore.util.FileMan;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+
+import java.util.List;
+
+public class delete extends CommandInterface {
+
+    @Override
+    public boolean onCommand(CommandSender sender,Command cmd,String label,String[] args) {
+        if (!sender.hasPermission("whiteg.test")){
+            sender.sendMessage("§b权限不足");
+            return true;
+        }
+        if (args.length == 2){
+            final DataCon dc = MMOCore.getPlayerData(args[1]);
+            if (dc != null){
+                FileMan.delete(dc);
+            } else sender.sendMessage("没有找到玩家");
+        }
+        return false;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender,Command cmd,String label,String[] args) {
+        return null;
+    }
+}
