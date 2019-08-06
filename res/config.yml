@@ -1,0 +1,63 @@
+ver: 6
+debug: false
+#玩家退出清理数据缓存
+QuitDeleteCache: false
+#数据储存文件夹
+DataDir: "plugins/MMOCore/Player"
+#防止玩家操作过于频繁
+Frequently: false
+#服务器是否是在线模式
+Online_Mode: false
+#回收站最大允许储存的数量，超出的自动清理
+Max_Recovery: 300
+
+#玩家请求提示音 - 列表播放
+PlayerReqestSound:
+  #循环播放次数
+  loop: 1
+  #tick帧间隔
+  tick: 2
+  #音轨(可嵌套List实现同轨多音符)
+  track:
+    - 'block.note_block.bell 1 0'
+    - 'block.note_block.bell 1 0.6'
+    - 'block.note_block.bell 1 0.4'
+
+#最近玩家列表最大数量(用于部分指令的Tab补全显示最近上线过的离线玩家)
+LatelyPlayerListSize: 100
+
+#音效的测试配置, 可在游戏里输入/mmo playsound <key> 来播放。 如: /mmo playsound Test1
+#单个音效格式: [声音id] <音量:默认1> <声调:默认1> <声音类型:默认players>
+Test1: 'block.note_block.bell 1 0 players'
+
+#同轨播放
+Test2:
+  - 'block.note_block.bell 1 0'
+  - 'block.note_block.bit 1 0.1'
+  - 'block.note_block.bass 1 0.15'
+
+#列表播放
+Test3:
+  #循环播放次数(-1为无限,除非插件内有写停止播放，否则会一直播放下去
+  loop: 2
+  #tick帧间隔
+  tick: 5
+  #音轨(可嵌套List实现同轨多音符)
+  track:
+    - 'block.note_block.bell 1 0'
+    - 'block.note_block.bell 1 0.4'
+    - 'block.note_block.bell 1 0.6'
+    - '' #空音符不会被播放
+    - ''
+    - - 'block.note_block.bit 1 1' #进阶实例,嵌套List同轨多符号
+      - 'block.ancient_debris.hit 1 1.2'
+    - 'block.ancient_debris.place'
+    - - 'block.note_block.bit 1 1'
+      - 'block.ancient_debris.hit 1 1.2'
+      - 'block.note_block.bass 1 0.15'
+    - ''
+    - ''
+    - - 'block.ancient_debris.place'
+      - 'block.ancient_debris.place'
+    - ''
+    - ''

@@ -1,0 +1,22 @@
+name: MMOCore
+main: cn.whiteg.mmocore.MMOCore
+version: 'build.220506'
+api-version: 1.13
+author: MoeWhite
+softdepend: [ ]
+commands:
+  mmocore:
+    description: The is MMOCore
+    aliases: [ 'mmo','mmc','moc','mmoc' ]
+  userdata:
+    description: The is MMOCore
+    aliases: [ 'ud','usd' ]
+  confirm:
+    description: Confirm Command
+    aliases: [ 'cf','c' ]
+  deny:
+    description: Deny Command
+    aliases: [ 'd','dy' ]
+  suicide:
+    description: Suicide Command
+
