@@ -29,14 +29,14 @@ public class SafeNumEven implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onDed(PlayerDeathEvent event) {
-        Player p = event.getEntity();
-        if(Frequent.CheckFrquent(event.getEntity().getName(),300)){
-            Bukkit.getScheduler().runTask(MMOCore.plugin,() -> PluginUtil.kickPlayer(event.getEntity(),"§b阁下操作过于频繁"));
+        final Player p = event.getEntity();
+        if (Frequent.CheckFrquent(p.getName(),300)){
+            Bukkit.getScheduler().runTask(MMOCore.plugin,() -> PluginUtil.kickPlayer(p,"§b阁下操作过于频繁"));
         }
         //YamlUtils.setLocation(MMOCore.getPlayerData(p).getConfig(),"Player.Back",p.getLocation());
     }
 
-//    @EventHandler
+    //    @EventHandler
 //    public void click(PlayerInteractEvent event) {
 //        if(Frequent.CheckFrquent(event.getPlayer().getName(),10)){
 //            Bukkit.getScheduler().runTask(MMOCore.plugin,() -> PluginUtil.kickPlayer(event.getPlayer(),"§b阁下操作过于频繁"));
