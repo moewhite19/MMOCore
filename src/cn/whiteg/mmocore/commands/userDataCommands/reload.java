@@ -30,10 +30,6 @@ public class reload extends CommandInterface {
         }
         DataCon dc = new DataCon(player);
 
-        if(dc == null){
-            sender.sendMessage("玩家不存在");
-            return true;
-        }
         MMOCore.plugin.PlayerDataMap.put(player.getUniqueId(),dc);
         return true;
     }

@@ -2,21 +2,22 @@ package cn.whiteg.mmocore.util;
 
 import cn.whiteg.mmocore.MMOCore;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 public class CoolDownUtil {
-    private static Map<String, PlayerCd> cdmap = new HashMap<>();
     static BukkitTask task = null;
+    private static Map<String, PlayerCd> cdmap = new HashMap<>();
 
     static {
         //runTask();
     }
 
     public static void update() {
-        long now = System.currentTimeMillis();
         if (cdmap.isEmpty()){
 //            task.cancel();
 //            task = null;

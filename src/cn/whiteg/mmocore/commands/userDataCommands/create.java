@@ -3,13 +3,12 @@ package cn.whiteg.mmocore.commands.userDataCommands;
 import cn.whiteg.mmocore.CommandInterface;
 import cn.whiteg.mmocore.DataCon;
 import cn.whiteg.mmocore.MMOCore;
-import cn.whiteg.mmocore.util.FileMan;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
 import java.util.List;
 
-public class delete extends CommandInterface {
+public class create extends CommandInterface {
 
     @Override
     public boolean onCommand(CommandSender sender,Command cmd,String label,String[] args) {
@@ -18,10 +17,9 @@ public class delete extends CommandInterface {
             return true;
         }
         if (args.length == 2){
-            final DataCon dc = MMOCore.getPlayerData(args[1]);
-            if (dc != null){
-                FileMan.delete(sender,dc);
-            } else sender.sendMessage("没有找到玩家");
+            final DataCon dc = MMOCore.craftData(args[1]);
+            dc.isNewFile = false;
+            dc.set("Player.by",sender.getName());
         }
         return false;
     }

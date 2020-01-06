@@ -9,7 +9,7 @@ import org.bukkit.command.CommandSender;
 
 import java.util.List;
 
-public class delete extends CommandInterface {
+public class rename extends CommandInterface {
 
     @Override
     public boolean onCommand(CommandSender sender,Command cmd,String label,String[] args) {
@@ -17,12 +17,14 @@ public class delete extends CommandInterface {
             sender.sendMessage("§b权限不足");
             return true;
         }
-        if (args.length == 2){
-            final DataCon dc = MMOCore.getPlayerData(args[1]);
-            if (dc != null){
-                FileMan.delete(sender,dc);
-            } else sender.sendMessage("没有找到玩家");
+        if (args.length == 3){
+            DataCon dc = MMOCore.getPlayerData(args[1]);
+            String newId = args[2];
+            FileMan.rename(sender,dc,newId);
+            return true;
+//            dc.set("Player.by",sender.getName());
         }
+        sender.sendMessage("/ud rename <玩家ID> <新ID>");
         return false;
     }
 

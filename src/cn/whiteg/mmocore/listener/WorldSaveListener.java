@@ -8,12 +8,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.world.WorldSaveEvent;
 
 public class WorldSaveListener implements Listener {
-    public static long savein = 0;
 
     @EventHandler
     public void onSave(WorldSaveEvent event) {
-        if (savein == 0 || (System.currentTimeMillis() - savein) > 5000){
-            savein = System.currentTimeMillis();
+        if (event.getWorld().getName().equals("world")){
             FileMan.SchedulSaveAll();
             if (Setting.DEBUG) MMOCore.logger.info("储存世界事件1");
         }

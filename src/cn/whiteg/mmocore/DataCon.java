@@ -12,8 +12,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
-import static cn.whiteg.mmocore.MMOCore.plugin;
-
 public class DataCon {
     private final File file;
     public boolean isNewFile = true;
@@ -27,7 +25,7 @@ public class DataCon {
     public DataCon(OfflinePlayer player) {
         uuid = player.getUniqueId();
         name = player.getName();
-        file = new File(plugin.dataDir,uuid.toString() + ".yml");
+        file = new File(Setting.DATADIR,uuid.toString() + ".yml");
         if (name == null || name.isEmpty()) return;
         load(true);
     }
@@ -37,7 +35,7 @@ public class DataCon {
     }
 
     public DataCon(UUID uuid,boolean load) {
-        file = new File(plugin.dataDir,uuid.toString() + ".yml");
+        file = new File(Setting.DATADIR,uuid.toString() + ".yml");
         this.uuid = uuid;
         if (load){
             load(false);
@@ -47,7 +45,7 @@ public class DataCon {
     public DataCon(@NotNull String name,boolean load,boolean create) {
         this.name = name;
         uuid = MMOCore.getUUID(name);
-        file = new File(plugin.dataDir,uuid.toString() + ".yml");
+        file = new File(Setting.DATADIR,uuid.toString() + ".yml");
         if (load){
             load(create);
         }
@@ -85,10 +83,12 @@ public class DataCon {
     }
 
     //储存
+    @Deprecated
     public boolean Save() {
         return Save(true);
     }
 
+    @Deprecated
     public boolean Save(boolean check) {
         if (isNewFile) return false;
         if (check){
@@ -104,6 +104,27 @@ public class DataCon {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public boolean save() {
+        if (isNewFile) return false;
+        try{
+            YMLFile.save(file);
+            return true;
+        }catch (Exception e){
+            MMOCore.logger.warning("玩家 " + name + " 的数据储存失败 : ");
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+    public boolean checkSave() {
+        if (isNewFile) return false;
+        if (!IOcheck()){
+            return false;
+        }
+        return save();
     }
 
     //检查文件是否要保存
@@ -222,5 +243,9 @@ public class DataCon {
 
     public File getFile() {
         return file;
+    }
+
+    public void setYMLFile(FileConfiguration YMLFile) {
+        this.YMLFile = YMLFile;
     }
 }

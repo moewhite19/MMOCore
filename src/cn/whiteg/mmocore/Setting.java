@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.Set;
 
 public class Setting {
-    public final static int VER = 2;
+    public final static int VER = 3;
     public static boolean DEBUG;
     public static FileConfiguration config;
     public static int Frequent;
@@ -17,6 +17,7 @@ public class Setting {
     public static boolean DELETE_CACHE;
     public static boolean SAVE_PLAYERDATA;
     public static boolean FREQUENTLY;
+    public static File DATADIR;
 
     public static void reload() {
         File file = new File(MMOCore.plugin.getDataFolder(),"config.yml");
@@ -44,5 +45,11 @@ public class Setting {
         DELETE_CACHE = config.getBoolean("QuitDeleteCache",false);
         SAVE_PLAYERDATA = config.getBoolean("SavePlayerData",false);
         FREQUENTLY = config.getBoolean("Frequently",false);
+        String dir = config.getString("DataDir");
+        if (dir != null){
+            DATADIR = new File(dir);
+        } else {
+            DATADIR = new File(MMOCore.plugin.getDataFolder(),"players");
+        }
     }
 }

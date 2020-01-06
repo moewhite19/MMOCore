@@ -20,14 +20,14 @@ public class save extends CommandInterface {
         }
         if (args.length == 1){
             if (sender instanceof Player){
-                MMOCore.plugin.PlayerDataMap.get((MMOCore.getUUID(sender.getName()))).Save();
+                MMOCore.plugin.PlayerDataMap.get((MMOCore.getUUID(sender.getName()))).checkSave();
                 sender.sendMessage("储存玩家数据");
             } else sender.sendMessage("该指令只能玩家使用");
             return true;
         } else if (args.length == 2){
             DataCon dc = MMOCore.plugin.PlayerDataMap.get(MMOCore.getUUID(args[1]));
             if (dc != null){
-                dc.Save();
+                dc.checkSave();
                 sender.sendMessage("储存玩家数据");
             } else sender.sendMessage("没有找到玩家");
         } else {

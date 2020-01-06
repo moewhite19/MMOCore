@@ -15,7 +15,6 @@ public class reload extends CommandInterface {
             sender.sendMessage("§b权限不足");
             return true;
         }
-        new CommandSender.Spigot().sendMessage();
         MMOCore.plugin.onReload();
         return true;
     }

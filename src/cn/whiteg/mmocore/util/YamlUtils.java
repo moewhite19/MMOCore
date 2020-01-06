@@ -1,5 +1,6 @@
 package cn.whiteg.mmocore.util;
 
+import com.sun.istack.internal.Nullable;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -30,11 +31,14 @@ public class YamlUtils {
         con.set("pitch",loc.getPitch());
     }
 
+    @Nullable
     public static Location getLocation(FileConfiguration con,String path) {
         if (!path.endsWith(".")){
             path = path + ".";
         }
-        World world = Bukkit.getWorld(con.getString(path + "world"));
+        String w = con.getString(path + "world");
+        if (w == null) return null;
+        World world = Bukkit.getWorld(w);
         if (world == null){
             return null;
         }

@@ -27,12 +27,13 @@ public class PlayerQuit implements Listener {
                             MMOCore.logger.info("已删除玩家存档" + py.getName());
                         }
                     } else {
-                        py.Save();
+                        py.checkSave();
                     }
                 });
                 MMOCore.unLoad(py.getUUID());
             } else {
-                py.Save();
+                py.checkSave();
+                MMOCore.unLoad(py.getUUID());
             }
         });
     }

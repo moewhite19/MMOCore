@@ -10,12 +10,15 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -27,7 +30,6 @@ import static cn.whiteg.mmocore.Setting.reload;
 public class MMOCore extends JavaPlugin {
     public static Logger logger;
     public static MMOCore plugin;
-    final File dataDir;
     public MainCommand mainCommand;
     public UserDataCommand userDataCommand;
     public SubCommand subCommand;
@@ -36,7 +38,6 @@ public class MMOCore extends JavaPlugin {
 
     public MMOCore() {
         plugin = this;
-        dataDir = new File(MMOCore.plugin.getDataFolder(),"Player");
     }
 
     public static DataCon getPlayerData(Player player) {
@@ -87,12 +88,12 @@ public class MMOCore extends JavaPlugin {
 
     public static boolean hasPlayerData(String name) {
         final String n = getUUID(name).toString();
-        final File file = new File(plugin.dataDir,n + ".yml");
+        final File file = new File(Setting.DATADIR,n + ".yml");
         return file.exists();
     }
 
     public static boolean hasPlayerData(UUID uuid) {
-        final File file = new File(plugin.dataDir,uuid.toString() + ".yml");
+        final File file = new File(Setting.DATADIR,uuid.toString() + ".yml");
         return file.exists();
     }
 
@@ -170,23 +171,51 @@ public class MMOCore extends JavaPlugin {
 
     public void unregEven() {
         for (Map.Entry<String, Listener> entry : listenerMap.entrySet()) {
-            unregEven(entry.getKey());
+            unregListener(entry.getValue());
         }
     }
 
-    public void unregEven(String Key) {
-        Listener evens = listenerMap.get(Key);
-        if (evens == null){
-            return;
+
+    /**
+     * 卸载事件
+     *
+     * @param Key "卸载"
+     */
+    public boolean unregEven(String Key) {
+        Listener listenr = listenerMap.remove(Key);
+        if (listenr == null){
+            return false;
         }
-        logger.info("注销: " + Key);
+        unregListener(listenr);
+        return true;
+    }
+
+    public void unregListener(Listener listener) {
+        //注销事件
+        Class listenerClass = listener.getClass();
         try{
-            Class c = evens.getClass();
-            Method unreg = c.getDeclaredMethod("unreg");
-            unreg.setAccessible(true);
-            unreg.invoke(evens);
-        }catch (SecurityException | IllegalArgumentException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e){
+            for (Method method : listenerClass.getMethods()) {
+                if (method.isAnnotationPresent(EventHandler.class)){
+                    Type[] tpyes = method.getGenericParameterTypes();
+                    if (tpyes.length == 1){
+                        Class<?> tc = Class.forName(tpyes[0].getTypeName());
+                        Method tm = tc.getMethod("getHandlerList");
+                        HandlerList handlerList = (HandlerList) tm.invoke(null);
+                        handlerList.unregister(listener);
+                    }
+                }
+            }
+        }catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | ClassNotFoundException e){
             e.printStackTrace();
+        }
+
+        //调用类中的unreg()方法
+        try{
+            Method unreg = listenerClass.getDeclaredMethod("unreg");
+            unreg.setAccessible(true);
+            unreg.invoke(listener);
+        }catch (Exception e){
+
         }
     }
 

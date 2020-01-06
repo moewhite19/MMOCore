@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="MoeLogin">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/../MoeLogin" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/../MoeLogin/MoeLogin插件模板/src" />
+      <root url="file://$PROJECT_DIR$/../MoeLogin/src" />
+    </SOURCES>
+    <jarDirectory url="file://$PROJECT_DIR$/../MoeLogin" recursive="false" />
+  </library>
+</component>
