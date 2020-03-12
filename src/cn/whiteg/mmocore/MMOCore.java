@@ -1,5 +1,6 @@
 package cn.whiteg.mmocore;
 
+import cn.whiteg.mmocore.common.PluginBase;
 import cn.whiteg.mmocore.listener.PlayerJoin;
 import cn.whiteg.mmocore.listener.PlayerQuit;
 import cn.whiteg.mmocore.listener.SafeNumEven;
@@ -10,31 +11,26 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.HandlerList;
-import org.bukkit.event.Listener;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 import static cn.whiteg.mmocore.Setting.reload;
 
 
-public class MMOCore extends JavaPlugin {
+public class MMOCore extends PluginBase {
     public static Logger logger;
     public static MMOCore plugin;
     public MainCommand mainCommand;
     public UserDataCommand userDataCommand;
     public SubCommand subCommand;
     public Map<UUID, DataCon> PlayerDataMap = new ConcurrentHashMap<>();
-    public Map<String, Listener> listenerMap = new HashMap<>();
 
     public MMOCore() {
         plugin = this;
@@ -98,19 +94,16 @@ public class MMOCore extends JavaPlugin {
     }
 
     public static DataCon craftData(Player player) {
-        DataCon dc = getPlayerData(player.getName());
+        DataCon dc = plugin.PlayerDataMap.get(player.getUniqueId());
         if (dc != null) return dc;
         dc = new DataCon(player);
-        dc.isNewFile = false;
-        plugin.PlayerDataMap.put(dc.getUUID(),dc);
         return dc;
     }
 
-    public static DataCon craftData(String naem) {
-        DataCon dc = getPlayerData(naem);
+    public static DataCon craftData(String name) {
+        DataCon dc = plugin.PlayerDataMap.get(getUUID(name));
         if (dc != null) return dc;
-        dc = new DataCon(naem,true,true);
-        plugin.PlayerDataMap.put(dc.getUUID(),dc);
+        dc = new DataCon(name,true,true);
         return dc;
     }
 
@@ -126,7 +119,13 @@ public class MMOCore extends JavaPlugin {
     public static List<String> getLoadDataNames() {
         List<String> ar = new ArrayList<>();
         for (Map.Entry<UUID, DataCon> entry : plugin.PlayerDataMap.entrySet()) {
-            ar.add(entry.getValue().getName());
+            DataCon dc = entry.getValue();
+            try{
+                ar.add(dc.getName());
+            }catch (Exception e){
+                e.printStackTrace();
+                ar.add(dc.getFile().getName());
+            }
         }
         return ar;
     }
@@ -157,68 +156,7 @@ public class MMOCore extends JavaPlugin {
         logger.info("--重载完成--");
     }
 
-    public void regEven(Listener listener) {
-        regEven(listener.getClass().getName(),listener);
-
-    }
-
-    public void regEven(String key,Listener listener) {
-        logger.info("注册事件:" + key);
-        listenerMap.put(key,listener);
-        Bukkit.getPluginManager().registerEvents(listener,plugin);
-
-    }
-
-    public void unregEven() {
-        for (Map.Entry<String, Listener> entry : listenerMap.entrySet()) {
-            unregListener(entry.getValue());
-        }
-    }
-
-
-    /**
-     * 卸载事件
-     *
-     * @param Key "卸载"
-     */
-    public boolean unregEven(String Key) {
-        Listener listenr = listenerMap.remove(Key);
-        if (listenr == null){
-            return false;
-        }
-        unregListener(listenr);
-        return true;
-    }
-
-    public void unregListener(Listener listener) {
-        //注销事件
-        Class listenerClass = listener.getClass();
-        try{
-            for (Method method : listenerClass.getMethods()) {
-                if (method.isAnnotationPresent(EventHandler.class)){
-                    Type[] tpyes = method.getGenericParameterTypes();
-                    if (tpyes.length == 1){
-                        Class<?> tc = Class.forName(tpyes[0].getTypeName());
-                        Method tm = tc.getMethod("getHandlerList");
-                        HandlerList handlerList = (HandlerList) tm.invoke(null);
-                        handlerList.unregister(listener);
-                    }
-                }
-            }
-        }catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | ClassNotFoundException e){
-            e.printStackTrace();
-        }
-
-        //调用类中的unreg()方法
-        try{
-            Method unreg = listenerClass.getDeclaredMethod("unreg");
-            unreg.setAccessible(true);
-            unreg.invoke(listener);
-        }catch (Exception e){
-
-        }
-    }
-
+    @Override
     public void onEnable() {
         plugin = this;
         logger = getLogger();
@@ -231,11 +169,11 @@ public class MMOCore extends JavaPlugin {
         getCommand("userdata").setExecutor(userDataCommand);
         subCommand = new SubCommand();
         if (Setting.SAVE_PLAYERDATA){
-            regEven(new PlayerJoin());
-            regEven(new PlayerQuit());
-            regEven(new WorldSaveListener());
+            regListener(new PlayerJoin());
+            regListener(new PlayerQuit());
+            regListener(new WorldSaveListener());
         }
-        if (Setting.FREQUENTLY) regEven(new SafeNumEven());
+        if (Setting.FREQUENTLY) regListener(new SafeNumEven());
         logger.info("全部加载完成");
         for (Player player : Bukkit.getOnlinePlayers()) {
             FileMan.load(player);
@@ -253,12 +191,12 @@ public class MMOCore extends JavaPlugin {
         });
     }
 
+    @Override
     public void onDisable() {
         FileMan.onSaveALL();
         PlayerDataMap.clear();
-        unregEven();
+        unregListener();
         //注销注册玩家加入服务器事件
-        listenerMap.clear();
         logger.info("插件已关闭");
     }
 }

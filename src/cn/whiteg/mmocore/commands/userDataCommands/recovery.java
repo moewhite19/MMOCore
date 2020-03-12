@@ -32,10 +32,10 @@ public class recovery extends CommandInterface {
             if (args.length == 2){
                 List<String> list = cacheList.get();
                 if (list == null){
-                    list = Arrays.asList(FileMan.canRecovery());
+                    list = Arrays.asList(FileMan.canRecoverys());
                     cacheList = new WeakReference<>(list);
                 }
-                return list;
+                return getMatches(list,args);
             }
         }
         return null;

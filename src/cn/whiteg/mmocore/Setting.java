@@ -1,6 +1,5 @@
 package cn.whiteg.mmocore;
 
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -13,7 +12,6 @@ public class Setting {
     public static boolean DEBUG;
     public static FileConfiguration config;
     public static int Frequent;
-    public static boolean hookLoginPlugin;
     public static boolean DELETE_CACHE;
     public static boolean SAVE_PLAYERDATA;
     public static boolean FREQUENTLY;
@@ -39,7 +37,6 @@ public class Setting {
                 e.printStackTrace();
             }
         }
-        hookLoginPlugin = config.getBoolean("hookLoginPlugin",Bukkit.getServer().getPluginManager().getPlugin("MoeLogin") != null);
         Frequent = 1000;
         DEBUG = config.getBoolean("debug");
         DELETE_CACHE = config.getBoolean("QuitDeleteCache",false);

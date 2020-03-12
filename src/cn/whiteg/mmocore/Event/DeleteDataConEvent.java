@@ -6,8 +6,6 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import java.util.Map;
-
 public class DeleteDataConEvent extends Event implements Cancellable {
     private static HandlerList handler = new HandlerList();
     final private DataCon dataCon;

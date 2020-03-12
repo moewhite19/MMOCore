@@ -1,7 +1,6 @@
 package cn.whiteg.mmocore.commands.userDataCommands;
 
 import cn.whiteg.mmocore.CommandInterface;
-import cn.whiteg.mmocore.DataCon;
 import cn.whiteg.mmocore.MMOCore;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -12,7 +11,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.io.File;
 import java.util.List;
 import java.util.UUID;
 

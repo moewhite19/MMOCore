@@ -1,6 +1,7 @@
 package cn.whiteg.mmocore;
 
 import com.sun.istack.internal.NotNull;
+import com.sun.istack.internal.Nullable;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
@@ -13,12 +14,11 @@ import java.io.IOException;
 import java.util.UUID;
 
 public class DataCon {
-    private final File file;
-    public boolean isNewFile = true;
+    final private File file;
     private boolean change = false;
     private String name;
     private UUID uuid;
-    private FileConfiguration YMLFile = new YamlConfiguration();
+    private FileConfiguration YMLFile = null;
     private boolean loaded = false;
 
 
@@ -59,7 +59,6 @@ public class DataCon {
         if (file.exists()){
             YMLFile = YamlConfiguration.loadConfiguration(file);
             loaded = true;
-            isNewFile = false;
             if (name == null){
                 YMLFile.getString("Player.name","Null");
             }
@@ -72,86 +71,51 @@ public class DataCon {
 //            }
             return true;
         } else if (create){
-            YMLFile = new YamlConfiguration();
-            YMLFile.set("Player.name",name);
-            YMLFile.set("Player.uuid",uuid.toString());
-            YMLFile.set("Player.join_time",String.valueOf(System.currentTimeMillis()));
-            loaded = true;
-            return true;
-        }
-        return false;
-    }
-
-    //储存
-    @Deprecated
-    public boolean Save() {
-        return Save(true);
-    }
-
-    @Deprecated
-    public boolean Save(boolean check) {
-        if (isNewFile) return false;
-        if (check){
-            if (!IOcheck()){
-                return false;
-            }
-        }
-        try{
-            YMLFile.save(file);
-            return true;
-        }catch (Exception e){
-            MMOCore.logger.warning("玩家 " + name + " 的数据储存失败 : ");
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public boolean save() {
-        if (isNewFile) return false;
-        try{
-            YMLFile.save(file);
-            return true;
-        }catch (Exception e){
-            MMOCore.logger.warning("玩家 " + name + " 的数据储存失败 : ");
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-
-    public boolean checkSave() {
-        if (isNewFile) return false;
-        if (!IOcheck()){
-            return false;
-        }
-        return save();
-    }
-
-    //检查文件是否要保存
-    public boolean IOcheck() {
-        if (isNewFile){
-            //     long qt = Long.parseLong(YMLFile.getString("Player.join_time",String.valueOf(0)));
-/*            if (qt == 0 || (System.currentTimeMillis() - qt) < 300000){
-                MMOCore.logger.info("没有保存配置文件" + file.toString());
-                return false;
-            }*/
-            if (Setting.hookLoginPlugin){
-                return false;
-            }
-            if (file == null) return false;
-            if (!file.getParentFile().exists()){
-                file.getParentFile().mkdir();
-            }
+            init();
             try{
                 file.createNewFile();
-                MMOCore.logger.info("创建空的配置文件:" + file.toString());
-                isNewFile = false;
+                change = true;
+                save();
+                loaded = true;
                 return true;
             }catch (IOException e){
                 e.printStackTrace();
             }
         }
-        return true;
+        return false;
+    }
+
+    public void init() {
+        if (YMLFile == null) YMLFile = new YamlConfiguration();
+        YMLFile.set("Player.name",name);
+        YMLFile.set("Player.uuid",uuid.toString());
+        YMLFile.set("Player.join_time",String.valueOf(System.currentTimeMillis()));
+    }
+
+
+    public void unload() {
+//        if (!loaded) return;
+        loaded = false;
+//        YMLFile = new YamlConfiguration();
+    }
+
+    public boolean save() {
+        if (!change || !loaded) return false;
+        try{
+            if (file.exists()){
+                if (Setting.DEBUG){
+                    MMOCore.logger.info("储存玩家" + getName());
+                }
+                YMLFile.save(file);
+                change = false;
+                return true;
+            }
+            return false;
+        }catch (Exception e){
+            MMOCore.logger.warning("玩家 " + name + " 的数据储存失败 : ");
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public Player getPlayer() {
@@ -237,10 +201,7 @@ public class DataCon {
         this.change = true;
     }
 
-    public void unload() {
-        loaded = false;
-    }
-
+    @Nullable
     public File getFile() {
         return file;
     }

@@ -1,10 +1,7 @@
 package cn.whiteg.mmocore.listener;
 
-import cn.whiteg.mmocore.DataCon;
 import cn.whiteg.mmocore.MMOCore;
 import cn.whiteg.mmocore.Setting;
-import cn.whiteg.mmocore.util.FileMan;
-import cn.whiteg.moeQbot.MoeQbot;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

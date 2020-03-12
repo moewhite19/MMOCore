@@ -28,6 +28,10 @@ public class CommandInterface implements CommandExecutor, TabCompleter {
         return getMatches(args[args.length - 1],list);
     }
 
+    public static List<String> getMatches(List<String> list,String value) {
+        return getMatches(value,list);
+    }
+
     public static List<String> getMatches(String value,List<String> list) {
         List<String> result = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
@@ -37,10 +41,6 @@ public class CommandInterface implements CommandExecutor, TabCompleter {
             }
         }
         return result;
-    }
-
-    public static List<String> getMatches(List<String> list,String value) {
-        return getMatches(list,value);
     }
 
     public static List<String> PlayersList(String arg) {

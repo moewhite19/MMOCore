@@ -1,9 +1,9 @@
 package cn.whiteg.mmocore.commands.userDataCommands;
 
+import cn.whiteg.mmocore.CommandInterface;
 import cn.whiteg.mmocore.DataCon;
 import cn.whiteg.mmocore.MMOCore;
-import cn.whiteg.mmocore.CommandInterface;
-import org.bukkit.Bukkit;
+import cn.whiteg.mmocore.util.FileMan;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -20,16 +20,21 @@ public class save extends CommandInterface {
         }
         if (args.length == 1){
             if (sender instanceof Player){
-                MMOCore.plugin.PlayerDataMap.get((MMOCore.getUUID(sender.getName()))).checkSave();
+                MMOCore.plugin.PlayerDataMap.get((MMOCore.getUUID(sender.getName()))).save();
                 sender.sendMessage("储存玩家数据");
             } else sender.sendMessage("该指令只能玩家使用");
             return true;
         } else if (args.length == 2){
-            DataCon dc = MMOCore.plugin.PlayerDataMap.get(MMOCore.getUUID(args[1]));
-            if (dc != null){
-                dc.checkSave();
-                sender.sendMessage("储存玩家数据");
-            } else sender.sendMessage("没有找到玩家");
+            String a = args[1];
+            if (a.equals("@a") || a.equals("*")){
+                FileMan.onSaveALL();
+            } else {
+                DataCon dc = MMOCore.plugin.PlayerDataMap.get(MMOCore.getUUID(a));
+                if (dc != null){
+                    dc.save();
+                    sender.sendMessage("储存玩家数据");
+                } else sender.sendMessage("没有找到玩家");
+            }
         } else {
             sender.sendMessage("参数有误");
         }

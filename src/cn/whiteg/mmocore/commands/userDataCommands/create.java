@@ -14,13 +14,19 @@ public class create extends CommandInterface {
     public boolean onCommand(CommandSender sender,Command cmd,String label,String[] args) {
         if (!sender.hasPermission("whiteg.test")){
             sender.sendMessage("§b权限不足");
-            return true;
+            return false;
         }
         if (args.length == 2){
             final DataCon dc = MMOCore.craftData(args[1]);
-            dc.isNewFile = false;
             dc.set("Player.by",sender.getName());
+            if (dc.isLoaded()){
+                sender.sendMessage("创建成功");
+                return true;
+            }
+            sender.sendMessage("创建失败");
+            return false;
         }
+        sender.sendMessage("参数有误");
         return false;
     }
 

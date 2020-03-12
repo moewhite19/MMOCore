@@ -18,12 +18,17 @@ public class delete extends CommandInterface {
             return true;
         }
         if (args.length == 2){
-            final DataCon dc = MMOCore.getPlayerData(args[1]);
+            String name = args[1];
+            final DataCon dc = MMOCore.getPlayerData(name);
             if (dc != null){
                 FileMan.delete(sender,dc);
-            } else sender.sendMessage("没有找到玩家");
+            } else if (FileMan.canRecovery(name)){
+                FileMan.deleteRecovery(sender,name);
+            } else {
+                sender.sendMessage("没有找到玩家");
+            }
         }
-        return false;
+        return true;
     }
 
     @Override
