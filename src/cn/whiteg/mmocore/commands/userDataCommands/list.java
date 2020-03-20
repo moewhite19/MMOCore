@@ -26,7 +26,7 @@ public class list extends CommandInterface {
                 return true;
             }
             if (args[1].toLowerCase().equals("get"))
-                sender.sendMessage("查询列表:" + MMOCore.plugin.PlayerDataMap.get(sender.getName()).getString(args[2]));
+                sender.sendMessage("查询列表:" + MMOCore.getPlayerData(sender.getName()).getString(args[2]));
             return true;
         } else if (args.length == 4){
             if (args[1].toLowerCase().equals("set")){
@@ -35,7 +35,7 @@ public class list extends CommandInterface {
             }
             Player player = Bukkit.getPlayer(args[1]);
             if (player != null)
-                sender.sendMessage("查询字符串:" + MMOCore.plugin.PlayerDataMap.get(sender.getName()).getString(args[3]));
+                sender.sendMessage("查询字符串:" + MMOCore.getPlayerData(sender.getName()).getString(args[3]));
             else sender.sendMessage("没有找到玩家");
         } else {
             sender.sendMessage("参数有误");

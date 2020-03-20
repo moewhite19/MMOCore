@@ -13,6 +13,7 @@ public class PluginUtil {
         p.kickPlayer(Message);
     }
 
+    @Deprecated
     public static PluginCommand getPluginCommanc(final JavaPlugin plugin,final String name) {
         return getPluginCommand(plugin,name);
     }

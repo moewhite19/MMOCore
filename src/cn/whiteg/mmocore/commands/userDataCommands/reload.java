@@ -29,7 +29,7 @@ public class reload extends CommandInterface {
         }
         DataCon dc = new DataCon(player);
 
-        MMOCore.plugin.PlayerDataMap.put(player.getUniqueId(),dc);
+        MMOCore.getPlayerDataMap().put(player.getUniqueId(),dc);
         return true;
     }
 

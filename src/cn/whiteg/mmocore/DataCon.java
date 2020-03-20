@@ -60,7 +60,7 @@ public class DataCon {
             YMLFile = YamlConfiguration.loadConfiguration(file);
             loaded = true;
             if (name == null){
-                YMLFile.getString("Player.name","Null");
+                name = YMLFile.getString("Player.name","Null");
             }
 //            else {
 //                name = YMLFile.getString("Player.name",name);

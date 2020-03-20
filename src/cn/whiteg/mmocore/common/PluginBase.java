@@ -66,7 +66,7 @@ public class PluginBase extends JavaPlugin {
                     }
                 }
             }
-        }catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | ClassNotFoundException e){
+        }catch (Exception e){
             e.printStackTrace();
         }
 
@@ -82,10 +82,5 @@ public class PluginBase extends JavaPlugin {
 
     public Map<String, Listener> getListenerMap() {
         return listenerMap;
-    }
-
-    @Override
-    public PluginCommand getCommand(String name) {
-        return PluginUtil.getPluginCommand(this,name);
     }
 }

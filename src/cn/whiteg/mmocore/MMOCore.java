@@ -14,11 +14,7 @@ import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.*;
 import java.util.logging.Logger;
 
 import static cn.whiteg.mmocore.Setting.reload;
@@ -27,10 +23,10 @@ import static cn.whiteg.mmocore.Setting.reload;
 public class MMOCore extends PluginBase {
     public static Logger logger;
     public static MMOCore plugin;
+    private final Map<UUID, DataCon> PlayerDataMap = Collections.synchronizedMap(new HashMap<>());
     public MainCommand mainCommand;
     public UserDataCommand userDataCommand;
     public SubCommand subCommand;
-    public Map<UUID, DataCon> PlayerDataMap = new ConcurrentHashMap<>();
 
     public MMOCore() {
         plugin = this;
@@ -56,14 +52,16 @@ public class MMOCore extends PluginBase {
     }
 
     public static DataCon getPlayerData(String name,boolean cache) {
-        DataCon dc = plugin.PlayerDataMap.get(getUUID(name));
-        if (dc != null) return dc;
-        dc = new DataCon(name,true,false);
-        if (dc.isLoaded()){
-            if (cache) plugin.PlayerDataMap.put(dc.getUUID(),dc);
-            return dc;
+        synchronized (plugin.PlayerDataMap) {
+            DataCon dc = plugin.PlayerDataMap.get(getUUID(name));
+            if (dc != null) return dc;
+            dc = new DataCon(name,true,false);
+            if (dc.isLoaded()){
+                if (cache) plugin.PlayerDataMap.put(dc.getUUID(),dc);
+                return dc;
+            }
+            return null;
         }
-        return null;
     }
 
     public static DataCon getPlayerData(String name) {
@@ -71,41 +69,55 @@ public class MMOCore extends PluginBase {
     }
 
     public static DataCon getPlayerData(UUID uuid,boolean cache) {
-        DataCon dc = plugin.PlayerDataMap.get(uuid);
-        if (dc != null) return dc;
-        dc = new DataCon(uuid,true);
-        if (dc.isLoaded()){
-            if (cache) plugin.PlayerDataMap.put(dc.getUUID(),dc);
-            plugin.PlayerDataMap.put(uuid,dc);
-            return dc;
+        synchronized (plugin.PlayerDataMap) {
+            DataCon dc = plugin.PlayerDataMap.get(uuid);
+            if (dc != null) return dc;
+            dc = new DataCon(uuid,true);
+            if (dc.isLoaded()){
+                if (cache) plugin.PlayerDataMap.put(dc.getUUID(),dc);
+                plugin.PlayerDataMap.put(uuid,dc);
+                return dc;
+            }
+            return null;
         }
-        return null;
     }
 
     public static boolean hasPlayerData(String name) {
-        final String n = getUUID(name).toString();
-        final File file = new File(Setting.DATADIR,n + ".yml");
-        return file.exists();
+        return hasPlayerData(getUUID(name));
     }
 
     public static boolean hasPlayerData(UUID uuid) {
+        synchronized (plugin.PlayerDataMap) {
+            if (plugin.PlayerDataMap.containsKey(uuid)){
+                return true;
+            }
+        }
         final File file = new File(Setting.DATADIR,uuid.toString() + ".yml");
         return file.exists();
     }
 
     public static DataCon craftData(Player player) {
-        DataCon dc = plugin.PlayerDataMap.get(player.getUniqueId());
-        if (dc != null) return dc;
-        dc = new DataCon(player);
-        return dc;
+        synchronized (plugin.PlayerDataMap) {
+            DataCon dc = plugin.PlayerDataMap.get(player.getUniqueId());
+            if (dc != null) return dc;
+            dc = new DataCon(player);
+            return dc;
+        }
     }
 
     public static DataCon craftData(String name) {
-        DataCon dc = plugin.PlayerDataMap.get(getUUID(name));
-        if (dc != null) return dc;
-        dc = new DataCon(name,true,true);
-        return dc;
+        synchronized (plugin.PlayerDataMap) {
+            DataCon dc = plugin.PlayerDataMap.get(getUUID(name));
+            if (dc != null) return dc;
+            dc = new DataCon(name,true,true);
+            return dc;
+        }
     }
+
+    public static Map<UUID, DataCon> getPlayerDataMap() {
+        return plugin.PlayerDataMap;
+    }
+
 
     public static DataCon unLoad(UUID uuid) {
         if (Setting.DEBUG){
@@ -178,17 +190,14 @@ public class MMOCore extends PluginBase {
         for (Player player : Bukkit.getOnlinePlayers()) {
             FileMan.load(player);
         }
-        Bukkit.getScheduler().runTask(this,() -> {
-            for (String name : subCommand.subCmds) {
-                PluginCommand pc = PluginUtil.getPluginCommanc(this,name);
-                if (pc != null){
-                    pc.setExecutor(subCommand);
-                    pc.setTabCompleter(subCommand);
-                } else {
-                    logger.warning("指令 " + name + " 注册失败");
-                }
+        for (Map.Entry<String, CommandInterface> entry : mainCommand.CommandMap.entrySet()) {
+            String cmd = entry.getKey();
+            PluginCommand pc = PluginUtil.getPluginCommand(this,cmd);
+            if (pc != null){
+                pc.setExecutor(subCommand);
+                pc.setTabCompleter(subCommand);
             }
-        });
+        }
     }
 
     @Override

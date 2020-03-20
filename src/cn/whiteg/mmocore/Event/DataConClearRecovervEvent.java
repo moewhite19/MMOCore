@@ -1,26 +1,24 @@
 package cn.whiteg.mmocore.Event;
 
-import cn.whiteg.mmocore.DataCon;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class DeleteDataConEvent extends Event implements Cancellable {
+public class DataConClearRecovervEvent extends Event implements Cancellable {
     private static HandlerList handler = new HandlerList();
-    final private DataCon dataCon;
+    private final CommandSender sender;
+    private final String name;
     private boolean cancelled = false;
 
-    public DeleteDataConEvent(DataCon dataCon) {
-        this.dataCon = dataCon;
+    public DataConClearRecovervEvent(CommandSender sender, String name) {
+        this.sender = sender;
+        this.name = name;
     }
 
     public static HandlerList getHandlerList() {
         return handler;
-    }
-
-    public DataCon getDataCon() {
-        return dataCon;
     }
 
     @Override
@@ -40,5 +38,13 @@ public class DeleteDataConEvent extends Event implements Cancellable {
     @Override
     public void setCancelled(boolean b) {
         cancelled = b;
+    }
+
+    public CommandSender getSender() {
+        return sender;
+    }
+
+    public String getName() {
+        return name;
     }
 }

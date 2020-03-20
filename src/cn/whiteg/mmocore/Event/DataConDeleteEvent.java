@@ -7,16 +7,14 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class DataConRenameEvent extends Event implements Cancellable {
+public class DataConDeleteEvent extends Event implements Cancellable {
     private static HandlerList handler = new HandlerList();
     final private DataCon dataCon;
-    final private String newId;
     private final CommandSender sender;
     private boolean cancelled = false;
 
-    public DataConRenameEvent(DataCon dataCon,String newId,CommandSender sender) {
+    public DataConDeleteEvent(DataCon dataCon,CommandSender sender) {
         this.dataCon = dataCon;
-        this.newId = newId;
         this.sender = sender;
     }
 
@@ -26,10 +24,6 @@ public class DataConRenameEvent extends Event implements Cancellable {
 
     public DataCon getDataCon() {
         return dataCon;
-    }
-
-    public String getNewId() {
-        return newId;
     }
 
     @Override
