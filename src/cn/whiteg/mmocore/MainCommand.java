@@ -24,8 +24,8 @@ public class MainCommand extends CommandInterface {
                 commandMap.put(cmd,ci);
                 PluginCommand pc = MMOCore.plugin.getCommand(cmd);
                 if (pc != null){
-                    pc.setExecutor(this);
-                    pc.setTabCompleter(this);
+                    pc.setExecutor(subCommand);
+                    pc.setTabCompleter(subCommand);
                 }
             }catch (ClassNotFoundException | InstantiationException | IllegalAccessException e){
                 e.printStackTrace();
