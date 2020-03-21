@@ -1,13 +1,11 @@
 package cn.whiteg.mmocore;
 
-import cn.whiteg.mmocore.common.CommandInterface;
 import cn.whiteg.mmocore.common.PluginBase;
 import cn.whiteg.mmocore.listener.PlayerJoin;
 import cn.whiteg.mmocore.listener.PlayerQuit;
 import cn.whiteg.mmocore.listener.SafeNumEven;
 import cn.whiteg.mmocore.listener.WorldSaveListener;
 import cn.whiteg.mmocore.util.FileMan;
-import cn.whiteg.mmocore.util.PluginUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.PluginCommand;
@@ -27,7 +25,6 @@ public class MMOCore extends PluginBase {
     private final Map<UUID, DataCon> PlayerDataMap = Collections.synchronizedMap(new HashMap<>());
     public MainCommand mainCommand;
     public UserDataCommand userDataCommand;
-    public MainCommand.SubCommand subCommand;
 
     public MMOCore() {
         plugin = this;
@@ -176,10 +173,18 @@ public class MMOCore extends PluginBase {
         logger.info("开始加载插件");
         reload();
         if (Setting.DEBUG) logger.info("§a调试模式已开启");
-        mainCommand = new MainCommand();
-        getCommand("MMOCore").setExecutor(mainCommand);
-        userDataCommand = new UserDataCommand();
-        getCommand("userdata").setExecutor(userDataCommand);
+        PluginCommand pc = getCommand("mmocore");
+        if (pc != null){
+            mainCommand = new MainCommand();
+            pc.setExecutor(mainCommand);
+            pc.setTabCompleter(mainCommand);
+        }
+        pc = getCommand("userdata");
+        if (pc != null){
+            userDataCommand = new UserDataCommand();
+            pc.setExecutor(userDataCommand);
+            pc.setTabCompleter(userDataCommand);
+        }
         regListener(new PlayerJoin());
         regListener(new PlayerQuit());
         regListener(new WorldSaveListener());
@@ -187,14 +192,6 @@ public class MMOCore extends PluginBase {
         logger.info("全部加载完成");
         for (Player player : Bukkit.getOnlinePlayers()) {
             FileMan.load(player);
-        }
-        for (Map.Entry<String, CommandInterface> entry : mainCommand.commandMap.entrySet()) {
-            String cmd = entry.getKey();
-            PluginCommand pc = PluginUtil.getPluginCommand(this,cmd);
-            if (pc != null){
-                pc.setExecutor(subCommand);
-                pc.setTabCompleter(subCommand);
-            }
         }
     }
 

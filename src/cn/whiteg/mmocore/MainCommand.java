@@ -1,7 +1,6 @@
 package cn.whiteg.mmocore;
 
 import cn.whiteg.mmocore.common.CommandInterface;
-import cn.whiteg.mmocore.util.PluginUtil;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
@@ -22,11 +21,11 @@ public class MainCommand extends CommandInterface {
             try{
                 Class c = Class.forName("cn.whiteg.mmocore.commands.mainCommand." + cmd);
                 CommandInterface ci = (CommandInterface) c.newInstance();
-                regCommand(cmd,ci);
-                PluginCommand pc = PluginUtil.getPluginCommand(MMOCore.plugin,cmd);
+                commandMap.put(cmd,ci);
+                PluginCommand pc = MMOCore.plugin.getCommand(cmd);
                 if (pc != null){
-                    pc.setExecutor(subCommand);
-                    pc.setTabCompleter(subCommand);
+                    pc.setExecutor(this);
+                    pc.setTabCompleter(this);
                 }
             }catch (ClassNotFoundException | InstantiationException | IllegalAccessException e){
                 e.printStackTrace();
@@ -68,7 +67,7 @@ public class MainCommand extends CommandInterface {
     }
 
     public void regCommand(String var1,CommandInterface cmd) {
-        commandMap.put(var1,cmd);
+
     }
 
     public class SubCommand extends CommandInterface {
@@ -79,9 +78,6 @@ public class MainCommand extends CommandInterface {
             if (ci == null) return false;
             String[] args = new String[strings.length + 1];
             args[0] = command.getName();
-    /*        for(int i = 0 ; i < args.length ; i++){
-                args[i + 1] = strings[i] ;
-            }*/
             System.arraycopy(strings,0,args,1,strings.length);
             ci.onCommand(commandSender,command,s,args);
             return true;
@@ -93,10 +89,6 @@ public class MainCommand extends CommandInterface {
             if (ci == null) return null;
             String[] args = new String[strings.length + 1];
             args[0] = command.getName();
-    /*        for(int i = 0 ; i < args.length ; i++){
-                args[i + 1] = strings[i] ;
-            }*/
-
             System.arraycopy(strings,0,args,1,strings.length);
             return ci.onTabComplete(commandSender,command,s,args);
         }
