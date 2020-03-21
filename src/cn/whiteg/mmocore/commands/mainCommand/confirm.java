@@ -1,6 +1,6 @@
 package cn.whiteg.mmocore.commands.mainCommand;
 
-import cn.whiteg.mmocore.CommandInterface;
+import cn.whiteg.mmocore.common.CommandInterface;
 import cn.whiteg.mmocore.container.ReqestContainer;
 import cn.whiteg.mmocore.api.ReqestManage;
 import org.bukkit.command.Command;

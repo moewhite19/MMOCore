@@ -1,12 +1,8 @@
 ver: 3
 debug: false
-#白名单(雾
-WhiteList: false
-WhiteListKickMessage: "§l阁下不在白名单列表内"
 #玩家退出清理数据缓存
 QuitDeleteCache: false
-#储存玩家数据
-SavePlayerData: false
+#数据储存文件夹
 DataDir: "plugins/MMOCore/Player"
 #防止玩家操作过于频繁
 Frequently: false

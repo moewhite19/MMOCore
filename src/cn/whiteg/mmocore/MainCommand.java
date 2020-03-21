@@ -1,19 +1,33 @@
 package cn.whiteg.mmocore;
 
-import org.bukkit.command.*;
+import cn.whiteg.mmocore.common.CommandInterface;
+import cn.whiteg.mmocore.util.PluginUtil;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.PluginCommand;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MainCommand extends CommandInterface {
-    public Map<String, CommandInterface> CommandMap = new HashMap();
-    public List<String> AllCmd;
+    final public List<String> allCommand = Arrays.asList("reload","confirm","deny","suicide");
+    final public Map<String, CommandInterface> commandMap = new HashMap<>(allCommand.size());
+    final public SubCommand subCommand = new SubCommand();
 
     public MainCommand() {
-        AllCmd = Arrays.asList("reload","confirm","deny","suicide");
-        for (int i = 0; i < AllCmd.size(); i++) {
+        for (int i = 0; i < allCommand.size(); i++) {
+            String cmd = allCommand.get(i);
             try{
-                Class c = Class.forName("cn.whiteg.mmocore.commands.mainCommand." + AllCmd.get(i));
-                regCommand(AllCmd.get(i),(CommandInterface) c.newInstance());
+                Class c = Class.forName("cn.whiteg.mmocore.commands.mainCommand." + cmd);
+                CommandInterface ci = (CommandInterface) c.newInstance();
+                regCommand(cmd,ci);
+                PluginCommand pc = PluginUtil.getPluginCommand(MMOCore.plugin,cmd);
+                if (pc != null){
+                    pc.setExecutor(subCommand);
+                    pc.setTabCompleter(subCommand);
+                }
             }catch (ClassNotFoundException | InstantiationException | IllegalAccessException e){
                 e.printStackTrace();
             }
@@ -26,8 +40,8 @@ public class MainCommand extends CommandInterface {
             sender.sendMessage("§2[§bMMOCore§2]");
             return true;
         }
-        if (CommandMap.containsKey(args[0])){
-            return CommandMap.get(args[0]).onCommand(sender,cmd,label,args);
+        if (commandMap.containsKey(args[0])){
+            return commandMap.get(args[0]).onCommand(sender,cmd,label,args);
         } else {
             sender.sendMessage("无效指令");
         }
@@ -39,7 +53,7 @@ public class MainCommand extends CommandInterface {
     public List<String> onTabComplete(CommandSender sender,Command cmd,String label,String[] args) {
         if (args.length > 1){
             List ls = null;
-            if (CommandMap.containsKey(args[0])) ls = CommandMap.get(args[0]).onTabComplete(sender,cmd,label,args);
+            if (commandMap.containsKey(args[0])) ls = commandMap.get(args[0]).onTabComplete(sender,cmd,label,args);
             if (ls != null){
                 return getMatches(args[args.length - 1],ls);
             }
@@ -48,13 +62,43 @@ public class MainCommand extends CommandInterface {
             args[i] = args[i].toLowerCase();
         }
         if (args.length == 1){
-            return getMatches(args[0],AllCmd);
+            return getMatches(args[0],allCommand);
         }
         return null;
     }
 
     public void regCommand(String var1,CommandInterface cmd) {
-        CommandMap.put(var1,cmd);
+        commandMap.put(var1,cmd);
     }
 
+    public class SubCommand extends CommandInterface {
+
+        @Override
+        public boolean onCommand(CommandSender commandSender,Command command,String s,String[] strings) {
+            final CommandInterface ci = commandMap.get(command.getName());
+            if (ci == null) return false;
+            String[] args = new String[strings.length + 1];
+            args[0] = command.getName();
+    /*        for(int i = 0 ; i < args.length ; i++){
+                args[i + 1] = strings[i] ;
+            }*/
+            System.arraycopy(strings,0,args,1,strings.length);
+            ci.onCommand(commandSender,command,s,args);
+            return true;
+        }
+
+        @Override
+        public List<String> onTabComplete(CommandSender commandSender,Command command,String s,String[] strings) {
+            CommandInterface ci = commandMap.get(command.getName());
+            if (ci == null) return null;
+            String[] args = new String[strings.length + 1];
+            args[0] = command.getName();
+    /*        for(int i = 0 ; i < args.length ; i++){
+                args[i + 1] = strings[i] ;
+            }*/
+
+            System.arraycopy(strings,0,args,1,strings.length);
+            return ci.onTabComplete(commandSender,command,s,args);
+        }
+    }
 }

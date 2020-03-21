@@ -1,6 +1,6 @@
 package cn.whiteg.mmocore.commands.mainCommand;
 
-import cn.whiteg.mmocore.CommandInterface;
+import cn.whiteg.mmocore.common.CommandInterface;
 import cn.whiteg.mmocore.api.ReqestManage;
 import cn.whiteg.mmocore.container.Reqest;
 import cn.whiteg.mmocore.container.ReqestAbs;

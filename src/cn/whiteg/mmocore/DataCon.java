@@ -62,13 +62,6 @@ public class DataCon {
             if (name == null){
                 name = YMLFile.getString("Player.name","Null");
             }
-//            else {
-//                name = YMLFile.getString("Player.name",name);
-//            }
-            //uuid = MMOCore.getUUID(name);
-//            if (uuid != null){
-//                YMLFile.set("Player.uuid",uuid.toString());
-//            }
             return true;
         } else if (create){
             init();

@@ -13,11 +13,6 @@ import org.bukkit.event.player.PlayerLoginEvent;
 
 public class PlayerJoin implements Listener {
 
-//    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-//    public void onPlayerLogin(PlayerLoginEvent event) {
-//        //Player player = event.getPlayer();
-//    }
-
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onAsyLogin(AsyncPlayerPreLoginEvent event) {
         final String name = event.getName();
@@ -26,22 +21,10 @@ public class PlayerJoin implements Listener {
             event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER,"服务器已存在相同ID");
             return;
         }
-//        final DataCon dc = MMOCore.getPlayerData(name);
-//        if(dc.getName().equals(name)){
-//
-//        }
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onLogin(PlayerLoginEvent event){
-        if(Setting.SAVE_PLAYERDATA){
-            MMOCore.craftData(event.getPlayer());
-        }
-    }
-
-    public void unreg() {
-        PlayerJoinEvent.getHandlerList().unregister(this);
-        PlayerLoginEvent.getHandlerList().unregister(this);
-        MMOCore.logger.info("已注销事件");
+        MMOCore.craftData(event.getPlayer());
     }
 }

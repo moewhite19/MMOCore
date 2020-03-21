@@ -1,6 +1,6 @@
 package cn.whiteg.mmocore.commands.userDataCommands;
 
-import cn.whiteg.mmocore.CommandInterface;
+import cn.whiteg.mmocore.common.CommandInterface;
 import cn.whiteg.mmocore.MMOCore;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;

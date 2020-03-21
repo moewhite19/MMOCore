@@ -1,6 +1,6 @@
 package cn.whiteg.mmocore.commands.userDataCommands;
 
-import cn.whiteg.mmocore.CommandInterface;
+import cn.whiteg.mmocore.common.CommandInterface;
 import cn.whiteg.mmocore.MMOCore;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;

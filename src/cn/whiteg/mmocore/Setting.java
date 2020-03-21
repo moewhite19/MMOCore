@@ -13,7 +13,6 @@ public class Setting {
     public static FileConfiguration config;
     public static int Frequent;
     public static boolean DELETE_CACHE;
-    public static boolean SAVE_PLAYERDATA;
     public static boolean FREQUENTLY;
     public static File DATADIR;
 
@@ -40,7 +39,6 @@ public class Setting {
         Frequent = 1000;
         DEBUG = config.getBoolean("debug");
         DELETE_CACHE = config.getBoolean("QuitDeleteCache",false);
-        SAVE_PLAYERDATA = config.getBoolean("SavePlayerData",false);
         FREQUENTLY = config.getBoolean("Frequently",false);
         String dir = config.getString("DataDir");
         if (dir != null){
