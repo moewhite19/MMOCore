@@ -1,12 +1,12 @@
 package cn.whiteg.mmocore.commands.userDataCommands;
 
-import cn.whiteg.mmocore.common.CommandInterface;
 import cn.whiteg.mmocore.MMOCore;
+import cn.whiteg.mmocore.Setting;
+import cn.whiteg.mmocore.common.CommandInterface;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -28,8 +28,9 @@ public class getuuid extends CommandInterface {
                 sender.sendMessage("没有找到玩家");
                 return true;
             }
+            String msg = args[1] + (Setting.onlineMode ? "§a在线模式" : "§b离线模式");
             if (sender instanceof Player){
-                BaseComponent[] bse = new ComponentBuilder(Bukkit.getServer().getOnlineMode() ? "§a在线模式" : "§b离线模式")
+                BaseComponent[] bse = new ComponentBuilder(msg)
                         .append(uuid.toString())
                         .color(ChatColor.WHITE)
                         .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND,uuid.toString()))
@@ -37,7 +38,9 @@ public class getuuid extends CommandInterface {
                 sender.spigot().sendMessage(bse);
                 return true;
             }
-            sender.sendMessage(Bukkit.getServer().getOnlineMode() ? "§a在线模式" : "§b离线模式" + "§f " + uuid);
+            sender.sendMessage(msg);
+        } else {
+            sender.sendMessage("请加上要查询的玩家ID");
         }
         return false;
     }
