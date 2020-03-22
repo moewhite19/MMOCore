@@ -8,6 +8,7 @@ import cn.whiteg.mmocore.listener.WorldSaveListener;
 import cn.whiteg.mmocore.util.FileMan;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 
@@ -80,6 +81,11 @@ public class MMOCore extends PluginBase {
         }
     }
 
+    public static DataCon getPlayerData(CommandSender sender) {
+        if (sender instanceof OfflinePlayer) return getPlayerData(((OfflinePlayer) sender));
+        return getPlayerData(sender.getName());
+    }
+
     public static boolean hasPlayerData(String name) {
         return hasPlayerData(getUUID(name));
     }
@@ -145,7 +151,7 @@ public class MMOCore extends PluginBase {
     }
 
     public static UUID getUUID(String name) {
-        if (Bukkit.getServer().getOnlineMode()){
+        if (Setting.onlineMode){
             Player player = Bukkit.getPlayerExact(name);
             if (player != null){
                 if (player.getName().equals(name)) return player.getUniqueId();

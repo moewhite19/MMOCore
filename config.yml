@@ -1,4 +1,4 @@
-ver: 3
+ver: 4
 debug: false
 #玩家退出清理数据缓存
 QuitDeleteCache: false
@@ -6,3 +6,5 @@ QuitDeleteCache: false
 DataDir: "plugins/MMOCore/Player"
 #防止玩家操作过于频繁
 Frequently: false
+#服务器是否是在线模式
+Online_Mode: false

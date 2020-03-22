@@ -25,7 +25,7 @@ public class clearup extends CommandInterface {
                 return false;
             }
             sender.sendMessage("开始清理" + day + "天前的回收站");
-            FileMan.recovery(sender,args[1]);
+            FileMan.clearUpRecovery(sender,day);
             return true;
         }
         return false;

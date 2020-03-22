@@ -112,6 +112,7 @@ public class FileMan {
         long mintime = System.currentTimeMillis() - (day * 86400000);
         File recoveryDir = new File(MMOCore.plugin.getDataFolder() + File.separator + "recovery" + File.separator + "MMOCore");
         if (recoveryDir.isDirectory()){
+            int i = 0;
             for (File file : recoveryDir.listFiles()) {
                 if (file.lastModified() < mintime){
                     String name = file.getName();
@@ -120,8 +121,10 @@ public class FileMan {
                         name = name.substring(0,w);
                     }
                     deleteRecovery(sender,name);
+                    i++;
                 }
             }
+            sender.sendMessage("§b共清理了§f" + i + "§b个回收站数据");
         }
     }
 

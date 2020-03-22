@@ -66,6 +66,8 @@ public class DataCon {
         } else if (create){
             init();
             try{
+                File dir = file.getParentFile();
+                if (!dir.exists()) dir.mkdirs();
                 file.createNewFile();
                 change = true;
                 save();

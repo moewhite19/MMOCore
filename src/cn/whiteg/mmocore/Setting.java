@@ -1,5 +1,6 @@
 package cn.whiteg.mmocore;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -8,12 +9,13 @@ import java.io.IOException;
 import java.util.Set;
 
 public class Setting {
-    public final static int VER = 3;
+    public final static int VER = 4;
     public static boolean DEBUG;
     public static FileConfiguration config;
     public static int Frequent;
     public static boolean DELETE_CACHE;
     public static boolean FREQUENTLY;
+    public static boolean onlineMode;
     public static File DATADIR;
 
     public static void reload() {
@@ -40,6 +42,8 @@ public class Setting {
         DEBUG = config.getBoolean("debug");
         DELETE_CACHE = config.getBoolean("QuitDeleteCache",false);
         FREQUENTLY = config.getBoolean("Frequently",false);
+
+        onlineMode = Bukkit.getOnlineMode() || config.getBoolean("Online_Mode",false);
         String dir = config.getString("DataDir");
         if (dir != null){
             DATADIR = new File(dir);

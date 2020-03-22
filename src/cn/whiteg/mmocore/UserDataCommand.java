@@ -12,7 +12,7 @@ public class UserDataCommand implements CommandExecutor, TabCompleter {
     private Map<String, CommandInterface> CommandMap = new HashMap();
     private String[] AllCmd;
     public UserDataCommand() {
-        AllCmd = new String[]{"load","reload","save","get","set", "unset","list","delete","fixfilename","delete","getuuid","unload" , "create", "rename" , "recovery"};
+        AllCmd = new String[]{"load","reload","save","get","set", "unset","list","delete","fixfilename","delete","getuuid","unload" , "create", "rename" , "recovery", "clearup"};
         for (int i = 0; i < AllCmd.length; i++) {
             try{
                 Class c = Class.forName("cn.whiteg.mmocore.commands.userDataCommands." + AllCmd[i]);
