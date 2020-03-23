@@ -237,14 +237,22 @@ public class FileMan {
         }
         Bukkit.getScheduler().runTask(MMOCore.plugin,() -> {
             try{
+                if (Bukkit.getPlayerExact(newId) != null){
+                    sender.sendMessage("错误: 当前新ID是在线状态");
+                    return;
+                }
+                Player p = dc.getPlayer();
+                if (p != null) p.kickPlayer("正在帮你重命名");
+//                MMOCore.getPlayerDataMap().remove(dc.getUUID());
+                dc.unload();
+                DataCon newDc = MMOCore.craftData(newId);
+                if (!newDc.isLoaded()){
+                    sender.sendMessage("创建新插件数据失败");
+                    return;
+                }
                 DataConRenameEvent event = new DataConRenameEvent(dc,newId,sender);
                 event.call();
                 if (event.isCancelled()) return;
-                Player p = dc.getPlayer();
-                if (p != null) p.kickPlayer("正在帮你重命名");
-                MMOCore.getPlayerDataMap().remove(dc.getUUID());
-//                MMOCore.unload(dc.getUUID());
-                DataCon newDc = MMOCore.craftData(newId);
                 sender.sendMessage("创建新插件数据");
                 for (String key : dc.getConfig().getKeys(true)) {
                     if (newDc.isSet(key)) continue;

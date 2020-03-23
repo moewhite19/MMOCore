@@ -41,8 +41,8 @@ public class MMOCore extends PluginBase {
             return dc;
         }
         dc = new DataCon(player);
+        if (!dc.isLoaded()) return null;
         plugin.PlayerDataMap.put(player.getUniqueId(),dc);
-
         return dc;
     }
 
@@ -105,6 +105,7 @@ public class MMOCore extends PluginBase {
             DataCon dc = plugin.PlayerDataMap.get(player.getUniqueId());
             if (dc != null) return dc;
             dc = new DataCon(player);
+            if (dc.isLoaded()) plugin.PlayerDataMap.put(dc.getUUID(),dc);
             return dc;
         }
     }
@@ -114,6 +115,7 @@ public class MMOCore extends PluginBase {
             DataCon dc = plugin.PlayerDataMap.get(getUUID(name));
             if (dc != null) return dc;
             dc = new DataCon(name,true,true);
+            if (dc.isLoaded()) plugin.PlayerDataMap.put(dc.getUUID(),dc);
             return dc;
         }
     }

@@ -12,11 +12,11 @@ public class PlayerQuit implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPlayerQuit(PlayerQuitEvent event) {
         Bukkit.getScheduler().runTask(MMOCore.plugin,() -> {
-            DataCon py = MMOCore.getPlayerData(event.getPlayer());
-            if (py == null) return;
-            py.setString("Player.quit_time",String.valueOf(System.currentTimeMillis()));
-            py.save();
-            MMOCore.unLoad(py.getUUID());
+            DataCon dc = MMOCore.getPlayerData(event.getPlayer());
+            if (dc == null) return;
+            dc.setString("Player.quit_time",String.valueOf(System.currentTimeMillis()));
+            dc.save();
+            MMOCore.unLoad(dc.getUUID());
         });
     }
 

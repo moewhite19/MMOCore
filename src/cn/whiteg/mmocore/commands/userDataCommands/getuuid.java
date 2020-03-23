@@ -38,7 +38,7 @@ public class getuuid extends CommandInterface {
                 sender.spigot().sendMessage(bse);
                 return true;
             }
-            sender.sendMessage(msg);
+            sender.sendMessage(msg + uuid.toString());
         } else {
             sender.sendMessage("请加上要查询的玩家ID");
         }

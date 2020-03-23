@@ -15,9 +15,9 @@ import java.util.UUID;
 
 public class DataCon {
     final private File file;
-    private boolean change = false;
+    final private UUID uuid;
     private String name;
-    private UUID uuid;
+    private boolean change = false;
     private FileConfiguration YMLFile = null;
     private boolean loaded = false;
 
@@ -28,10 +28,6 @@ public class DataCon {
         file = new File(Setting.DATADIR,uuid.toString() + ".yml");
         if (name == null || name.isEmpty()) return;
         load(true);
-    }
-
-    public DataCon(Player player) {
-        this(((OfflinePlayer) player));
     }
 
     public DataCon(UUID uuid,boolean load) {
