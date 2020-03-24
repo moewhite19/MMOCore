@@ -7,7 +7,6 @@ import cn.whiteg.mmocore.Event.DataConRecovervEvent;
 import cn.whiteg.mmocore.Event.DataConRenameEvent;
 import cn.whiteg.mmocore.MMOCore;
 import cn.whiteg.mmocore.Setting;
-import cn.whiteg.moeLogin.utils.PasswordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -228,62 +227,72 @@ public class FileMan {
         }
     }
 
-    public static void rename(CommandSender sender,DataCon dc,String newId) {
-        if (!PasswordUtils.checkName(newId)){
+    public static void rename(CommandSender sender,DataCon dc,String name,String newName) {
+        if (!CommonUtils.checkName(newName)){
             sender.sendMessage("无效名称");
+            return;
         }
         if (dc == null){
             sender.sendMessage("找不到玩家");
+            return;
         }
         Bukkit.getScheduler().runTask(MMOCore.plugin,() -> {
             try{
-                if (Bukkit.getPlayerExact(newId) != null){
-                    sender.sendMessage("错误: 当前新ID是在线状态");
-                    return;
+                if (Setting.onlineMode){
+                    DataConRenameEvent event = new DataConRenameEvent(dc,name,newName,sender);
+                    event.call();
+                    if (event.isCancelled()) return;
+                    dc.setName(newName);
+                    sender.sendMessage("给在线玩家重命名完成");
+                } else {
+                    if (Bukkit.getPlayerExact(newName) != null){
+                        sender.sendMessage("错误: 当前新ID是在线状态");
+                        return;
+                    }
+                    Player p = dc.getPlayer();
+                    if (p != null) p.kickPlayer("正在帮你重命名");
+                    dc.unload();
+                    DataCon newDc = MMOCore.craftData(newName);
+                    if (!newDc.isLoaded()){
+                        sender.sendMessage("创建新插件数据失败");
+                        return;
+                    }
+                    DataConRenameEvent event = new DataConRenameEvent(dc,name,newName,sender);
+                    event.call();
+                    if (event.isCancelled()) return;
+                    sender.sendMessage("创建新插件数据");
+                    for (String key : dc.getConfig().getKeys(true)) {
+                        if (newDc.isSet(key)) continue;
+                        newDc.set(key,dc.get(key));
+                    }
+                    newDc.save();
+                    UUID uuid = dc.getUUID();
+                    UUID newuuid = newDc.getUUID();
+                    //if (uuid == null || uuid.isEmpty()) uuid = MMOCore.getOfflineUUID(args[1]).toString();
+                    File dir = new File("world/playerdata");
+                    File file = new File(dir,uuid.toString() + ".dat");
+                    File newFile = new File(dir,newuuid.toString() + ".dat");
+                    if (file.exists()){
+                        if (newFile.exists()) newFile.delete();
+                        file.renameTo(newFile);
+                        sender.sendMessage("以移动玩家数据");
+                    }
+                    file = new File("plugins/MMOCore/Player",uuid.toString() + ".yml");
+                    if (file.exists()){
+                        file.delete();
+                        sender.sendMessage("删除旧插件数据");
+                    }
+                    dir = new File("world/advancements");
+                    file = new File(dir,uuid.toString() + ".json");
+                    newFile = new File(dir,newuuid.toString() + ".json");
+                    if (file.exists()){
+                        file.renameTo(newFile);
+                        if (newFile.exists()) newFile.delete();
+                        sender.sendMessage("已转移进度");
+                    }
+                    sender.sendMessage("重命名完成");
                 }
-                Player p = dc.getPlayer();
-                if (p != null) p.kickPlayer("正在帮你重命名");
-//                MMOCore.getPlayerDataMap().remove(dc.getUUID());
-                dc.unload();
-                DataCon newDc = MMOCore.craftData(newId);
-                if (!newDc.isLoaded()){
-                    sender.sendMessage("创建新插件数据失败");
-                    return;
-                }
-                DataConRenameEvent event = new DataConRenameEvent(dc,newId,sender);
-                event.call();
-                if (event.isCancelled()) return;
-                sender.sendMessage("创建新插件数据");
-                for (String key : dc.getConfig().getKeys(true)) {
-                    if (newDc.isSet(key)) continue;
-                    newDc.set(key,dc.get(key));
-                }
-                newDc.save();
-                UUID uuid = dc.getUUID();
-                UUID newuuid = newDc.getUUID();
-                //if (uuid == null || uuid.isEmpty()) uuid = MMOCore.getOfflineUUID(args[1]).toString();
-                File dir = new File("world/playerdata");
-                File file = new File(dir,uuid.toString() + ".dat");
-                File newFile = new File(dir,newuuid.toString() + ".dat");
-                if (file.exists()){
-                    if (newFile.exists()) newFile.delete();
-                    file.renameTo(newFile);
-                    sender.sendMessage("以移动玩家数据");
-                }
-                file = new File("plugins/MMOCore/Player",uuid.toString() + ".yml");
-                if (file.exists()){
-                    file.delete();
-                    sender.sendMessage("删除旧插件数据");
-                }
-                dir = new File("world/advancements");
-                file = new File(dir,uuid.toString() + ".json");
-                newFile = new File(dir,newuuid.toString() + ".json");
-                if (file.exists()){
-                    file.renameTo(newFile);
-                    if (newFile.exists()) newFile.delete();
-                    sender.sendMessage("已转移进度");
-                }
-                sender.sendMessage("重命名完成");
+
             }catch (Exception e){
                 sender.sendMessage("重命名过程中出现异常" + e.getMessage());
                 e.printStackTrace();

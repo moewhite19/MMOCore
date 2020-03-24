@@ -1,8 +1,8 @@
 package cn.whiteg.mmocore.commands.userDataCommands;
 
-import cn.whiteg.mmocore.common.CommandInterface;
 import cn.whiteg.mmocore.DataCon;
 import cn.whiteg.mmocore.MMOCore;
+import cn.whiteg.mmocore.common.CommandInterface;
 import cn.whiteg.mmocore.util.FileMan;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -18,9 +18,10 @@ public class rename extends CommandInterface {
             return true;
         }
         if (args.length == 3){
-            DataCon dc = MMOCore.getPlayerData(args[1]);
-            String newId = args[2];
-            FileMan.rename(sender,dc,newId);
+            String name = args[1];
+            DataCon dc = MMOCore.getPlayerData(name);
+            String newName = args[2];
+            FileMan.rename(sender,dc,name,newName);
             return true;
 //            dc.set("Player.by",sender.getName());
         }

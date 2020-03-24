@@ -38,8 +38,8 @@ public class SafeNumEven implements Listener {
 
     //    @EventHandler
 //    public void click(PlayerInteractEvent event) {
-//        if(Frequent.CheckFrquent(event.getPlayer().getName(),10)){
-//            Bukkit.getScheduler().runTask(MMOCore.plugin,() -> PluginUtil.kickPlayer(event.getPlayer(),"§b阁下操作过于频繁"));
+//        if(Frequent.CheckFrquent(event.getName().getName(),10)){
+//            Bukkit.getScheduler().runTask(MMOCore.plugin,() -> PluginUtil.kickPlayer(event.getName(),"§b阁下操作过于频繁"));
 //        }
 //        //YamlUtils.setLocation(MMOCore.getPlayerData(p).getConfig(),"Player.Back",p.getLocation());
 //    }

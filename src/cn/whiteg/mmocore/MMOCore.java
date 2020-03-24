@@ -156,7 +156,7 @@ public class MMOCore extends PluginBase {
         if (Setting.onlineMode){
             Player player = Bukkit.getPlayerExact(name);
             if (player != null){
-                if (player.getName().equals(name)) return player.getUniqueId();
+                return player.getUniqueId();
             }
             OfflinePlayer op = Bukkit.getOfflinePlayer(name);
             return op.getUniqueId();

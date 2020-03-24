@@ -1,9 +1,11 @@
 package cn.whiteg.mmocore;
 
+import cn.whiteg.mmocore.Event.DataConRenameEvent;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -80,7 +82,7 @@ public class DataCon {
         if (YMLFile == null) YMLFile = new YamlConfiguration();
         YMLFile.set("Player.name",name);
         YMLFile.set("Player.uuid",uuid.toString());
-        YMLFile.set("Player.join_time",String.valueOf(System.currentTimeMillis()));
+        YMLFile.set("Player.join_time",System.currentTimeMillis());
     }
 
 
@@ -176,6 +178,11 @@ public class DataCon {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+        YMLFile.set("Player.name",name);
+    }
+
     public UUID getUUID() {
         return uuid;
     }
@@ -199,5 +206,20 @@ public class DataCon {
 
     public void setYMLFile(FileConfiguration YMLFile) {
         this.YMLFile = YMLFile;
+    }
+
+    public void update(Player player) {
+        String n = YMLFile.getString("Player.name");
+        String playerName = player.getName();
+        if (n == null){
+            setName(playerName);
+        } else if (!n.equals(playerName)){
+            CommandSender sender = Bukkit.getConsoleSender();
+            sender.sendMessage("§b玩家§f" + n + "§b已重命名为§f" + playerName);
+            DataConRenameEvent event = new DataConRenameEvent(this,n,playerName,Bukkit.getConsoleSender());
+            event.call();
+            if (event.isCancelled()) return;
+            setName(playerName);
+        }
     }
 }
