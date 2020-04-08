@@ -1,24 +1,30 @@
 package cn.whiteg.mmocore.util;
 
-import cn.whiteg.mmocore.MMOCore;
 import cn.whiteg.mmocore.Setting;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class Frequent {
-    private static final BukkitTask task;
-    private static Map<String, Integer> playerEvents = new ConcurrentHashMap<>();
+    private static final Thread therad;
+    private static Map<String, Integer> playerEvents = Collections.synchronizedMap(new HashMap<>());
 
     static {
-        task = new BukkitRunnable() {
+        therad = new Thread() {
             @Override
             public void run() {
-                playerEvents.clear();
+                while (true) {
+                    playerEvents.clear();
+                    try{
+                        sleep(10000);
+                    }catch (InterruptedException e){
+                        e.printStackTrace();
+                    }
+                }
             }
-        }.runTaskTimerAsynchronously(MMOCore.plugin,200,200);
+        };
+        therad.start();
     }
 
     public static boolean CheckFrquent(String id,int i) {
@@ -28,9 +34,10 @@ public class Frequent {
     public static boolean CheckFrquent(String id,int i,int max) {
         int pi = playerEvents.getOrDefault(id,0);
         playerEvents.put(id,pi += i);
-        if (pi > max){
-            return true;
-        }
-        return false;
+        return pi > max;
+    }
+
+    public static Thread getTherad() {
+        return therad;
     }
 }

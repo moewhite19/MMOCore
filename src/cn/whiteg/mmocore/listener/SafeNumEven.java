@@ -7,45 +7,66 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockCanBuildEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandSendEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class SafeNumEven implements Listener {
+    final static String msg = "§b阁下操作过于频繁";
 
     @EventHandler(ignoreCancelled = true)
     public void onChat(AsyncPlayerChatEvent event) {
-        if (Frequent.CheckFrquent(event.getPlayer().getName(),10)){
-            Bukkit.getScheduler().runTask(MMOCore.plugin,() -> PluginUtil.kickPlayer(event.getPlayer(),"§b阁下操作过于频繁"));
+        if (Frequent.CheckFrquent(event.getPlayer().getName(),200)){
+            Bukkit.getScheduler().runTask(MMOCore.plugin,() -> {
+//                PluginUtil.kickPlayer(event.getPlayer(),"§b阁下操作过于频繁");
+//                event.setCancelled(true);
+                event.getPlayer().sendMessage(msg);
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(),"mute " + event.getPlayer().getName() + " 10m");
+            });
         }
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onCommand(PlayerCommandSendEvent event) {
-        if (Frequent.CheckFrquent(event.getPlayer().getName(),10)){
-            Bukkit.getScheduler().runTask(MMOCore.plugin,() -> PluginUtil.kickPlayer(event.getPlayer(),"§b阁下操作过于频繁"));
+        final Player p = event.getPlayer();
+        if (Frequent.CheckFrquent(p.getName(),100)){
+            Bukkit.getScheduler().runTask(MMOCore.plugin,() -> {
+//                PluginUtil.kickPlayer(event.getPlayer(),"");
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(),"ml ban " + p.getName() + " 10m " + msg);
+            });
         }
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onDed(PlayerDeathEvent event) {
         final Player p = event.getEntity();
-        if (Frequent.CheckFrquent(p.getName(),800)){
-            Bukkit.getScheduler().runTask(MMOCore.plugin,() -> PluginUtil.kickPlayer(p,"§b阁下操作过于频繁"));
+        if (Frequent.CheckFrquent(p.getName(),300)){
+            Bukkit.getScheduler().runTask(MMOCore.plugin,() -> PluginUtil.kickPlayer(p,msg));
         }
-        //YamlUtils.setLocation(MMOCore.getPlayerData(p).getConfig(),"Player.Back",p.getLocation());
     }
 
-    //    @EventHandler
-//    public void click(PlayerInteractEvent event) {
-//        if(Frequent.CheckFrquent(event.getName().getName(),10)){
-//            Bukkit.getScheduler().runTask(MMOCore.plugin,() -> PluginUtil.kickPlayer(event.getName(),"§b阁下操作过于频繁"));
-//        }
-//        //YamlUtils.setLocation(MMOCore.getPlayerData(p).getConfig(),"Player.Back",p.getLocation());
+//    @EventHandler(ignoreCancelled = true)
+//    public void buildBlock(BlockCanBuildEvent event) {
+//
 //    }
-    public void unreg() {
-        PlayerDeathEvent.getHandlerList().unregister(this);
-        AsyncPlayerChatEvent.getHandlerList().unregister(this);
-        PlayerCommandSendEvent.getHandlerList().unregister(this);
+
+    //
+    @EventHandler
+    public void click(PlayerInteractEvent event) {
+        if (event.getAction() == Action.LEFT_CLICK_BLOCK) return;
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK){
+            ItemStack item = event.getItem();
+            if (item != null && item.getType().isAir()) return;
+        }
+        if (Frequent.CheckFrquent(event.getPlayer().getName(),10)){
+            event.setCancelled(true);
+            Bukkit.getScheduler().runTask(MMOCore.plugin,() -> {
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(),"ml ban " + event.getPlayer().getName() + " 5m " + msg);
+            });
+        }
     }
 }

@@ -10,7 +10,6 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Logger;
 
 public abstract class CommandInterface implements CommandExecutor, TabCompleter {
     public CommandInterface() {
@@ -30,7 +29,7 @@ public abstract class CommandInterface implements CommandExecutor, TabCompleter 
     }
 
     public static List<String> getMatches(String value,List<String> list) {
-        List<String> result = new ArrayList<>();
+        List<String> result = new ArrayList<>(list.size());
         for (int i = 0; i < list.size(); i++) {
             String str = list.get(i).intern().toLowerCase();
             if (str.startsWith(value.toLowerCase())){

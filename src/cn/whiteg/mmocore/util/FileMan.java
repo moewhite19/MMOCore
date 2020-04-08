@@ -82,7 +82,9 @@ public class FileMan {
             if (!nDir.exists()){
                 nDir.mkdirs();
             }
+            if (nFile.exists()) nFile.delete();
             file.renameTo(nFile);
+            sender.sendMessage("已恢复玩家存档");
         }
         file = new File(recoveryDir + File.separator + "MMOCore",name + ".yml");
         nDir = new File("plugins/MMOCore/Player");
@@ -91,7 +93,9 @@ public class FileMan {
             if (!nDir.exists()){
                 nDir.mkdirs();
             }
+            if (nFile.exists()) nFile.delete();
             file.renameTo(nFile);
+            sender.sendMessage("已恢复数据");
         }
         file = new File(recoveryDir + File.separator + "advancements",name + ".json");
         nDir = new File("world","advancements");
@@ -100,7 +104,9 @@ public class FileMan {
             if (!nDir.exists()){
                 nDir.mkdirs();
             }
+            if (nFile.exists()) nFile.delete();
             file.renameTo(nFile);
+            sender.sendMessage("已恢复进度");
         }
         DataConRecovervEvent event = new DataConRecovervEvent(sender,name);
         event.call();
@@ -236,7 +242,7 @@ public class FileMan {
             sender.sendMessage("找不到玩家");
             return;
         }
-        Bukkit.getScheduler().runTask(MMOCore.plugin,() -> {
+        Runnable runnable = () -> {
             try{
                 if (Setting.onlineMode){
                     DataConRenameEvent event = new DataConRenameEvent(dc,name,newName,sender);
@@ -297,6 +303,8 @@ public class FileMan {
                 sender.sendMessage("重命名过程中出现异常" + e.getMessage());
                 e.printStackTrace();
             }
-        });
+        };
+        if (Bukkit.isPrimaryThread()) runnable.run();
+        else Bukkit.getScheduler().runTask(MMOCore.plugin,runnable);
     }
 }

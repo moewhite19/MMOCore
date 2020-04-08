@@ -1,6 +1,7 @@
 package cn.whiteg.mmocore.Event;
 
 import cn.whiteg.mmocore.DataCon;
+import cn.whiteg.mmocore.MMOCore;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.Cancellable;
@@ -32,9 +33,14 @@ public class DataConDeleteEvent extends Event implements Cancellable {
     }
 
     public void call() {
-        Bukkit.getPluginManager().callEvent(this);
+        if (Bukkit.isPrimaryThread()){
+            Bukkit.getPluginManager().callEvent(this);
+        } else {
+            Bukkit.getScheduler().runTask(MMOCore.plugin,() -> {
+                Bukkit.getPluginManager().callEvent(this);
+            });
+        }
     }
-
     @Override
     public boolean isCancelled() {
         return cancelled;

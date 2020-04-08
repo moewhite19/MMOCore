@@ -6,6 +6,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.HashMap;
@@ -72,8 +73,9 @@ public class PluginBase extends JavaPlugin {
             Method unreg = listenerClass.getDeclaredMethod("unreg");
             unreg.setAccessible(true);
             unreg.invoke(listener);
-        }catch (Exception ignored){
-
+        }catch (IllegalAccessException | InvocationTargetException e){
+            e.printStackTrace();
+        }catch (NoSuchMethodException ignored){
         }
     }
 
