@@ -3,6 +3,12 @@ package cn.whiteg.mmocore.util;
 import java.util.regex.Pattern;
 
 public class CommonUtils {
+    private final static long day = 86400000L;
+    private final static long hour = 3600000L;
+    private final static long minute = 60000L;
+    private final static long second = 1000L;
+
+
     private final static Pattern MC_USERNAME_PATTERN = Pattern.compile("^[a-zA-Z0-9_]{3,16}$");
 
     public static boolean checkName(String str) {
@@ -17,59 +23,68 @@ public class CommonUtils {
                 case 'S':
                 case 's': {
                     str = str.substring(0,str.length() - 1);
-                    return Long.valueOf(str) * 1000;
+                    return Long.valueOf(str) * second;
                 }
                 case 'M':
                 case 'm': {
                     str = str.substring(0,str.length() - 1);
-                    return Long.valueOf(str) * 60000;
+                    return Long.valueOf(str) * minute;
                 }
                 case 'H':
                 case 'h': {
                     str = str.substring(0,str.length() - 1);
-                    return Long.valueOf(str) * 3600000;
+                    return Long.valueOf(str) * hour;
                 }
                 case 'D':
                 case 'd': {
                     str = str.substring(0,str.length() - 1);
-                    return Long.valueOf(str) * 86400000;
+                    return Long.valueOf(str) * day;
                 }
             }
             return Long.valueOf(str) * 60000;
         }catch (NumberFormatException ex){
-            return 0;
+            return -1;
         }
     }
 
     public static String tanMintoh(long l) {
         final StringBuilder sb = new StringBuilder();
-        if (l < 1000){
+        if (l < 0) return "";
+        if (l < second){
             return sb.append(l).append("毫秒").toString();
         }
-        int s = 0;
-        int m = 0;
-        int h = 0;
-        int d = 0;
-        while (l >= 1000) {
-            l -= 1000;
-            s++;
-            if (s >= 60){
-                s = 0;
-                m++;
+        if (l >= day){
+            int i = 0;
+            while (l >= day) {
+                l -= day;
+                i++;
             }
-            if (m >= 60){
-                m = 0;
-                h++;
-            }
-            if (h >= 24){
-                h = 0;
-                d++;
-            }
+            sb.append(i).append("天");
         }
-        if (d > 0) sb.append(d).append("天");
-        if (h > 0) sb.append(h).append("小时");
-        if (m > 0) sb.append(m).append("分钟");
-        if (s > 0) sb.append(s).append("秒");
+        if (l >= hour){
+            int i = 0;
+            while (l >= hour) {
+                l -= hour;
+                i++;
+            }
+            sb.append(i).append("小时");
+        }
+        if (l >= minute){
+            int i = 0;
+            while (l >= minute) {
+                l -= minute;
+                i++;
+            }
+            sb.append(i).append("分钟");
+        }
+        if (l >= second){
+            int i = 0;
+            while (l >= second) {
+                l -= second;
+                i++;
+            }
+            sb.append(i).append("秒");
+        }
         return sb.toString();
     }
 }

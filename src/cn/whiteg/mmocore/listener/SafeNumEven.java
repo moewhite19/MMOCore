@@ -8,11 +8,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockCanBuildEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandSendEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class SafeNumEven implements Listener {
@@ -54,6 +54,22 @@ public class SafeNumEven implements Listener {
 //
 //    }
 
+
+    @EventHandler(ignoreCancelled = true)
+    public void onTp(PlayerTeleportEvent event) {
+        if (event.getCause() != PlayerTeleportEvent.TeleportCause.END_GATEWAY || event.getCause() != PlayerTeleportEvent.TeleportCause.NETHER_PORTAL)
+            return;
+//        Location from = event.getFrom();
+//        Location tp = event.getTo();
+        final Player p = event.getPlayer();
+        if (Frequent.CheckFrquent(p.getName(),350)){
+            event.setCancelled(true);
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(),"ml ban " + event.getPlayer().getName() + " 10m " + msg);
+        }
+    }
+
+/*
+
     //
     @EventHandler
     public void click(PlayerInteractEvent event) {
@@ -69,4 +85,7 @@ public class SafeNumEven implements Listener {
             });
         }
     }
+*/
+
+
 }
