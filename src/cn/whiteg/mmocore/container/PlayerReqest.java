@@ -8,6 +8,7 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Location;
+import org.bukkit.SoundCategory;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -62,14 +63,14 @@ public abstract class PlayerReqest extends ReqestAbs {
             float[] list = new float[]{0f,0.6f,0.4f};
             @Override
             public void run() {
-                if (!player.isOnline()){
+                if (player.isDead()){
                     cancel();
                     return;
                 }
                 float f = list[i];
-                if (f < 0 || f > 2) return;
+                if (f < 0f || f > 2f) return;
                 Location loc = player.getLocation();
-                player.playSound(loc,"block.note_block.bell",1,f);
+                player.playSound(loc,"block.note_block.bell",SoundCategory.PLAYERS,1,f);
                 i++;
                 if (i >= list.length){
                     cancel();
