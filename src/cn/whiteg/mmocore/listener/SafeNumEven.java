@@ -80,7 +80,7 @@ public class SafeNumEven implements Listener {
         }
         if (Frequent.CheckFrquent(event.getPlayer().getName(),10)){
             event.setCancelled(true);
-            Bukkit.getScheduler().runTask(MMOCore.plugin,() -> {
+            Bukkit.getScheduler().accept(MMOCore.plugin,() -> {
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(),"ml ban " + event.getPlayer().getName() + " 5m " + msg);
             });
         }

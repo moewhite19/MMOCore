@@ -25,22 +25,15 @@ public abstract class PlayerReqest extends ReqestAbs {
      * 接受时调用
      */
     @Override
-    public void onAccept() {
-        if (sender.isOnline()) acceptEvent();
-        else {
-            player.sendMessage("对方已下线");
-        }
-    }
+    public abstract void onAccept();
 
     /**
      * 拒绝时调用
      */
     @Override
     public void onDeny() {
-        if (sender.isOnline()) denyEvent();
-        else {
-            player.sendMessage("对方已下线");
-        }
+        sender.sendMessage(" §f" + player.getDisplayName() + "§r§b已拒绝阁下的§f" + name + "§b请求");
+        player.sendMessage(" §b已拒绝§f" + name + "§b请求");
     }
 
     @Override
@@ -72,11 +65,23 @@ public abstract class PlayerReqest extends ReqestAbs {
         return sender;
     }
 
-    public abstract void acceptEvent();
-
-    public void denyEvent() {
-        sender.sendMessage(" §f" + player.getDisplayName() + "§r§b已拒绝§f" + name + "§b请求");
-        player.sendMessage(" §b已拒绝§f" + name + "§b请求");
+    @Override
+    public void accept() {
+        remove();
+        if (sender.isOnline()){
+            onAccept();
+        } else {
+            sender.sendMessage("§b对方已下线");
+        }
     }
 
+    @Override
+    public void deny() {
+        remove();
+        if (sender.isOnline()){
+            onDeny();
+        } else {
+            sender.sendMessage("§b对方已下线");
+        }
+    }
 }

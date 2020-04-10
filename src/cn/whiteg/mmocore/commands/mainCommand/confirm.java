@@ -1,8 +1,8 @@
 package cn.whiteg.mmocore.commands.mainCommand;
 
+import cn.whiteg.mmocore.api.ReqestManage;
 import cn.whiteg.mmocore.common.CommandInterface;
 import cn.whiteg.mmocore.container.ReqestContainer;
-import cn.whiteg.mmocore.api.ReqestManage;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -17,16 +17,15 @@ public class confirm extends CommandInterface {
         if (sender instanceof Player){
             boolean r = false;
             if (args.length == 1){
-                r = ReqestManage.runTask(sender.getName());
+                r = ReqestManage.accept(sender.getName());
             } else if (args.length == 2){
-                r = ReqestManage.runTask(sender.getName(),args[1]);
+                r = ReqestManage.accept(sender.getName(),args[1]);
             }
             if (!r){
                 sender.sendMessage("§b没有待确认事件");
             }
-            return true;
         }
-        return false;
+        return true;
     }
 
     @Override

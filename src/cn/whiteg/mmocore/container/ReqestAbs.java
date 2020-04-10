@@ -5,7 +5,7 @@ public abstract class ReqestAbs implements Reqest {
     private ReqestContainer h;
 
     public ReqestAbs() {
-        time = System.currentTimeMillis();
+        time = System.currentTimeMillis() + 60000;
     }
 
     @Override
@@ -43,7 +43,7 @@ public abstract class ReqestAbs implements Reqest {
 
     @Override
     public boolean isOvertime() {
-        return System.currentTimeMillis() - time > 60000;
+        return System.currentTimeMillis() > time;
     }
 
     abstract public void onAccept();

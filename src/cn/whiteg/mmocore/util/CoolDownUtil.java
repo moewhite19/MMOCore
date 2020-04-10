@@ -14,7 +14,7 @@ public class CoolDownUtil {
     private static Map<String, PlayerCd> cdmap = new HashMap<>();
 
     static {
-        //runTask();
+        //accept();
     }
 
     public static void update() {

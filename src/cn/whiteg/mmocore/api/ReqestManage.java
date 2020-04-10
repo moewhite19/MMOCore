@@ -62,8 +62,7 @@ public class ReqestManage {
         return cf.getRequest(name);
     }
 
-    @Deprecated
-    public static boolean runTask(final String id) {
+    public static boolean accept(final String id) {
         final ReqestContainer ce = getContainer(id);
         if (ce == null) return false;
         final Reqest la = ce.getLastEvn();
@@ -73,7 +72,7 @@ public class ReqestManage {
         return true;
     }
 
-    public static boolean runTask(final String id,final String name) {
+    public static boolean accept(final String id,final String name) {
         Reqest ce = getEvent(id,name);
         if (ce == null) return false;
         ce.accept();
