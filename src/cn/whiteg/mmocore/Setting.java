@@ -43,7 +43,7 @@ public class Setting {
         DELETE_CACHE = config.getBoolean("QuitDeleteCache",false);
         FREQUENTLY = config.getBoolean("Frequently",false);
 
-        onlineMode = Bukkit.getOnlineMode() || config.getBoolean("Online_Mode",false);
+        onlineMode = config.getBoolean("Online_Mode",false);
         String dir = config.getString("DataDir");
         if (dir != null){
             DATADIR = new File(dir);

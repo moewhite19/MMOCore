@@ -195,42 +195,52 @@ public class FileMan {
         e.call();
         if (e.isCancelled()) return;
         final Player p = Bukkit.getPlayerExact(dc.getName());
-        if (p != null) p.kickPlayer("你被请出服务器");
-        if (sender == null) sender = Bukkit.getConsoleSender();
-        final UUID uuid = dc.getUUID();
-        //if (uuid == null || uuid.isEmpty()) uuid = MMOCore.getOfflineUUID(args[1]).toString();
-        MMOCore.getPlayerDataMap().remove(uuid);
-        dc.save();
-        dc.unload();
-        File recoveryDir = new File(MMOCore.plugin.getDataFolder() + File.separator + "recovery");
-        File file = new File("world/playerdata",uuid.toString() + ".dat");
-        File nDir = new File(recoveryDir + File.separator + "playerdata");
-        File nFile = new File(nDir,dc.getName() + ".dat");
+        Runnable runnable = () -> {
+            CommandSender s = sender;
+            if (sender == null) s = Bukkit.getConsoleSender();
+            final UUID uuid = dc.getUUID();
+            //if (uuid == null || uuid.isEmpty()) uuid = MMOCore.getOfflineUUID(args[1]).toString();
+            MMOCore.getPlayerDataMap().remove(uuid);
+            dc.save();
+            dc.unload();
+            File recoveryDir = new File(MMOCore.plugin.getDataFolder() + File.separator + "recovery");
+            File file = new File("world/playerdata",uuid.toString() + ".dat");
+            File nDir = new File(recoveryDir + File.separator + "playerdata");
+            File nFile = new File(nDir,dc.getName() + ".dat");
 //        Logger logger = MMOCore.logger;
-        if (file.exists()){
-            if (!nDir.exists()) nDir.mkdirs();
-            if (nFile.exists()) nFile.delete();
-            file.renameTo(nFile);
-            sender.sendMessage("已删除玩家存档");
+            if (file.exists()){
+                if (!nDir.exists()) nDir.mkdirs();
+                if (nFile.exists()) nFile.delete();
+                file.renameTo(nFile);
+                s.sendMessage("已删除玩家存档");
+            }
+            file = new File("plugins/MMOCore/Player",uuid.toString() + ".yml");
+            nDir = new File(recoveryDir,"MMOCore");
+            nFile = new File(nDir,dc.getName() + ".yml");
+            if (file.exists()){
+                if (!nDir.exists()) nDir.mkdirs();
+                if (nFile.exists()) nFile.delete();
+                file.renameTo(nFile);
+                s.sendMessage("已删除玩家数据");
+            }
+            file = new File("world/advancements",uuid.toString() + ".json");
+            nDir = new File(recoveryDir,"advancements");
+            nFile = new File(nDir,dc.getName() + ".json");
+            if (file.exists()){
+                if (!nDir.exists()) nDir.mkdirs();
+                if (nFile.exists()) nFile.delete();
+                file.renameTo(nFile);
+                s.sendMessage("已删除玩家进度");
+            }
+        };
+
+        if (p != null){
+            p.kickPlayer("你被请出服务器");
+            Bukkit.getScheduler().runTaskLater(MMOCore.plugin,runnable,20L);
+        } else {
+            runnable.run();
         }
-        file = new File("plugins/MMOCore/Player",uuid.toString() + ".yml");
-        nDir = new File(recoveryDir,"MMOCore");
-        nFile = new File(nDir,dc.getName() + ".yml");
-        if (file.exists()){
-            if (!nDir.exists()) nDir.mkdirs();
-            if (nFile.exists()) nFile.delete();
-            file.renameTo(nFile);
-            sender.sendMessage("已删除玩家数据");
-        }
-        file = new File("world/advancements",uuid.toString() + ".json");
-        nDir = new File(recoveryDir,"advancements");
-        nFile = new File(nDir,dc.getName() + ".json");
-        if (file.exists()){
-            if (!nDir.exists()) nDir.mkdirs();
-            if (nFile.exists()) nFile.delete();
-            file.renameTo(nFile);
-            sender.sendMessage("已删除玩家进度");
-        }
+
     }
 
     public static void rename(CommandSender sender,DataCon dc,String name,String newName) {
