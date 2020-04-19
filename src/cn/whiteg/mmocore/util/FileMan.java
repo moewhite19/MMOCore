@@ -236,7 +236,7 @@ public class FileMan {
 
         if (p != null){
             p.kickPlayer("你被请出服务器");
-            Bukkit.getScheduler().runTaskLater(MMOCore.plugin,runnable,20L);
+            Bukkit.getScheduler().runTaskLater(MMOCore.plugin,runnable,2L);
         } else {
             runnable.run();
         }
