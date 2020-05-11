@@ -61,6 +61,7 @@ public abstract class PlayerReqest extends ReqestAbs {
         new BukkitRunnable() {
             int i = 0;
             float[] list = new float[]{0f,0.6f,0.4f};
+
             @Override
             public void run() {
                 if (player.isDead()){
