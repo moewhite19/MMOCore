@@ -1,17 +1,18 @@
 package cn.whiteg.mmocore.container;
 
+import org.bukkit.command.CommandSender;
+
 public interface Reqest {
 
     /**
      * 接受时调用
      */
-    void accept();
+    void accept(CommandSender sender);
 
     /**
      * 拒绝时调用
      */
-    void deny();
-
+    void deny(CommandSender sender);
 
     /**
      * 取消事件

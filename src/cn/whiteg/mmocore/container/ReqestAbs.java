@@ -1,5 +1,7 @@
 package cn.whiteg.mmocore.container;
 
+import org.bukkit.command.CommandSender;
+
 public abstract class ReqestAbs implements Reqest {
     final Long time;
     private ReqestContainer h;
@@ -14,15 +16,15 @@ public abstract class ReqestAbs implements Reqest {
     }
 
     @Override
-    public void accept() {
+    public void accept(CommandSender sender) {
         remove();
-        onAccept();
+        onAccept(sender);
     }
 
     @Override
-    public void deny() {
+    public void deny(CommandSender sender) {
         remove();
-        onDeny();
+        onDeny(sender);
     }
 
     @Override
@@ -46,9 +48,10 @@ public abstract class ReqestAbs implements Reqest {
         return System.currentTimeMillis() > time;
     }
 
-    abstract public void onAccept();
 
-    abstract public void onDeny();
+    abstract public void onAccept(CommandSender sender);
+
+    abstract public void onDeny(CommandSender sender);
 
     public void onCanel() {
 

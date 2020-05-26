@@ -10,7 +10,7 @@ import java.util.Set;
 public class ReqestContainer {
     final private Map<String, Reqest> entMap = new HashMap<>();
     final private String name;
-    private String lastEvn;
+    private String lastReqest;
 
     public ReqestContainer(String name) {
         this.name = name;
@@ -24,7 +24,7 @@ public class ReqestContainer {
 
     public void setEvent(final String name,final Reqest reqest) {
         entMap.put(name,reqest);
-        lastEvn = name;
+        lastReqest = name;
         reqest.setHander(this);
     }
 
@@ -37,15 +37,15 @@ public class ReqestContainer {
     }
 
     public void removeEvent() {
-        entMap.remove(lastEvn);
+        entMap.remove(lastReqest);
     }
 
     public boolean isEmpty() {
         return entMap.isEmpty();
     }
 
-    public Reqest getLastEvn() {
-        return entMap.get(lastEvn);
+    public Reqest getLastReqest() {
+        return entMap.get(lastReqest);
     }
 
     public Reqest getRequest(String name) {
@@ -65,7 +65,7 @@ public class ReqestContainer {
         return name;
     }
 
-    public boolean candel() {
+    public boolean loop() {
         if (entMap.isEmpty()) return true;
         final Iterator<Entry<String, Reqest>> i = entMap.entrySet().iterator();
         while (i.hasNext()) {
@@ -73,9 +73,9 @@ public class ReqestContainer {
             if (e == null) continue;
             if (e.getValue().isOvertime()){
                 i.remove();
-//                if(e.getValue() instanceof ReqestAbs){
-//
-//                }
+                if (e.getValue() instanceof ReqestAbs){
+                    ((ReqestAbs) e.getValue()).onCanel();
+                }
             }
         }
         return entMap.isEmpty();

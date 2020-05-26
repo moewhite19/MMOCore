@@ -1,10 +1,11 @@
 package cn.whiteg.mmocore.api;
 
 import cn.whiteg.mmocore.MMOCore;
+import cn.whiteg.mmocore.container.ConfirmReqest;
 import cn.whiteg.mmocore.container.Reqest;
 import cn.whiteg.mmocore.container.ReqestContainer;
-import cn.whiteg.mmocore.container.ConfirmReqest;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.HashMap;
@@ -55,31 +56,37 @@ public class ReqestManage {
         return addEvent(id,name,new ConfirmReqest(runnable));
     }
 
-
     public static Reqest getEvent(final String id,final String name) {
         final ReqestContainer cf = getContainer(id);
         if (cf == null) return null;
         return cf.getRequest(name);
     }
 
-    public static boolean accept(final String id) {
+    public static boolean accept(CommandSender sender,final String id) {
         final ReqestContainer ce = getContainer(id);
         if (ce == null) return false;
-        final Reqest la = ce.getLastEvn();
-        if (la == null) return false;
-        la.accept();
-        la.remove();
+        final Reqest reqest = ce.getLastReqest();
+        if (reqest == null) return false;
+        reqest.accept(sender);
+        reqest.remove();
         return true;
     }
 
     public static boolean accept(final String id,final String name) {
-        Reqest ce = getEvent(id,name);
-        if (ce == null) return false;
-        ce.accept();
-        ce.remove();
+        Reqest reqest = getEvent(id,name);
+        if (reqest == null) return false;
+        reqest.accept(null);
+        reqest.remove();
         return true;
     }
 
+    public static boolean accept(CommandSender sender,final String id,final String name) {
+        Reqest reqest = getEvent(id,name);
+        if (reqest == null) return false;
+        reqest.accept(sender);
+        reqest.remove();
+        return true;
+    }
 
     public static ReqestContainer getContainer(final String id) {
         return getContainer(id,false);
@@ -105,7 +112,7 @@ public class ReqestManage {
                 Iterator<Map.Entry<String, ReqestContainer>> i = confirmMap.entrySet().iterator();
                 while (i.hasNext()) {
                     Map.Entry<String, ReqestContainer> e = i.next();
-                    if (e.getValue().candel()) i.remove();
+                    if (e.getValue().loop()) i.remove();
                 }
             },200,200);
         }

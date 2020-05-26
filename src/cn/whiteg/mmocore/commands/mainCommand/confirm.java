@@ -17,9 +17,9 @@ public class confirm extends CommandInterface {
         if (sender instanceof Player){
             boolean r = false;
             if (args.length == 1){
-                r = ReqestManage.accept(sender.getName());
+                r = ReqestManage.accept(sender,sender.getName());
             } else if (args.length == 2){
-                r = ReqestManage.accept(sender.getName(),args[1]);
+                r = ReqestManage.accept(sender,sender.getName(),args[1]);
             }
             if (!r){
                 sender.sendMessage("§b没有待确认事件");

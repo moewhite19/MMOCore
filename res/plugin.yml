@@ -16,3 +16,6 @@ commands:
   deny:
     description: Deny Command
     aliases: ['d','dy']
+  suicide:
+    description: Suicide Command
+

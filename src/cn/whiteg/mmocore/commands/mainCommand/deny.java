@@ -23,17 +23,16 @@ public class deny extends CommandInterface {
                 return false;
             }
             if (args.length == 1){
-                final Reqest reqest = cf.getLastEvn();
+                final Reqest reqest = cf.getLastReqest();
                 if (reqest != null){
-                    cf.getLastEvn().deny();
+                    cf.getLastReqest().deny(sender);
                     return true;
                 }
                 sender.sendMessage(msg_f);
-
             } else if (args.length == 2){
                 final Reqest reqest = cf.getRequest(args[1]);
                 if (reqest != null){
-                    reqest.deny();
+                    reqest.deny(sender);
                     return true;
                 }
                 sender.sendMessage(msg_f);
