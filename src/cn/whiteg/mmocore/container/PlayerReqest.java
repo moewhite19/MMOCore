@@ -55,22 +55,23 @@ public abstract class PlayerReqest extends ReqestAbs {
         sender.sendMessage(" " + p.getDisplayName() + "§b已存在一个相同请求");
         return false;
     }
+
     //发送给谁所有人
     public void sendAll() {
         int i = 0;
         for (Player p : Bukkit.getServer().getOnlinePlayers()) {
-            if(p == sender) continue;
+            if (p == sender) continue;
             ComponentBuilder cb = new ComponentBuilder(" §f" + sender.getDisplayName() + " §7给你发送了一个 §f" + name + "§7 请求");
             cb.append(" §3§l>>§b§l点我接受§3§l<<");
             cb.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/confirm " + id));
             cb.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new BaseComponent[]{new TextComponent("§3点我或者使用指令§a/c " + id + "§3接受" + "\n" + "§3也可以使用指令§a/d " + id + "§9拒绝")}));
             BaseComponent[] msg = cb.create();
             if (p.isOnline() && ReqestManage.addEvent(p.getName(),id,this)){
-                p.sendMessage(msg);
+                p.spigot().sendMessage(msg);
                 playsound(p);
                 i++;
             } else {
-                sender.sendMessage(" " + p.getDisplayName() + "§b已存在一个相同请求");
+                sender.sendMessage(" " + p.getDisplayName() + " §b已存在一个相同请求");
             }
         }
         sender.sendMessage(" §b已发送 §f" + i + " §b个" + name + "请求");

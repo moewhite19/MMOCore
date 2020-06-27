@@ -48,7 +48,7 @@ public class suicide extends CommandInterface {
                 cb.append("§b来确认");
                 cb.reset();
                 BaseComponent[] msg = cb.create();
-                sender.sendMessage(msg);
+                sender.spigot().sendMessage(msg);
             } else {
                 sender.sendMessage("阁下没有权限");
             }

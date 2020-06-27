@@ -87,7 +87,7 @@ public class FileMan {
             sender.sendMessage("已恢复玩家存档");
         }
         file = new File(recoveryDir + File.separator + "MMOCore",name + ".yml");
-        nDir = new File("plugins/MMOCore/Player");
+        nDir = Setting.DATADIR;
         nFile = new File(nDir,uuid.toString() + ".yml");
         if (file.exists()){
             if (!nDir.exists()){
@@ -214,7 +214,7 @@ public class FileMan {
                 file.renameTo(nFile);
                 s.sendMessage("已删除玩家存档");
             }
-            file = new File("plugins/MMOCore/Player",uuid.toString() + ".yml");
+            file = new File(Setting.DATADIR,uuid.toString() + ".yml");
             nDir = new File(recoveryDir,"MMOCore");
             nFile = new File(nDir,dc.getName() + ".yml");
             if (file.exists()){
@@ -293,7 +293,7 @@ public class FileMan {
                         file.renameTo(newFile);
                         sender.sendMessage("以移动玩家数据");
                     }
-                    file = new File("plugins/MMOCore/Player",uuid.toString() + ".yml");
+                    file = new File(Setting.DATADIR,uuid.toString() + ".yml");
                     if (file.exists()){
                         file.delete();
                         sender.sendMessage("删除旧插件数据");
