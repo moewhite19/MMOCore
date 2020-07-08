@@ -36,7 +36,7 @@ public class suicide extends CommandInterface {
                     @Override
                     public void onCanel() {
                         if (player.isOnline()){
-                            player.sendMessage("世界很大，我很喜欢这个世界,可是世界不喜欢我....");
+                            player.chat("世界很大，我很喜欢这个世界,可是世界不喜欢我....");
                         }
                     }
                 };

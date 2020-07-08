@@ -23,6 +23,7 @@ import static cn.whiteg.mmocore.Setting.reload;
 public class MMOCore extends PluginBase {
     public static Logger logger;
     public static MMOCore plugin;
+    public static LinkedList<String> latelyPlayerList = new LinkedList<>(); //最近玩家列表
     private final Map<UUID, DataCon> PlayerDataMap = Collections.synchronizedMap(new HashMap<>());
     public MainCommand mainCommand;
     public UserDataCommand userDataCommand;
@@ -164,6 +165,10 @@ public class MMOCore extends PluginBase {
         return getOfflineUUID(name);
     }
 
+    public static LinkedList<String> getLatelyPlayerList() {
+        return latelyPlayerList;
+    }
+
     public void onLoad() {
         saveDefaultConfig();
     }
@@ -201,14 +206,19 @@ public class MMOCore extends PluginBase {
         for (Player player : Bukkit.getOnlinePlayers()) {
             FileMan.load(player);
         }
+
+        //从文件加载最近玩家列表
+        FileMan.loadList(new File(getDataFolder(),"latelyPlayerList.txt"),latelyPlayerList);
     }
 
     @Override
     public void onDisable() {
         FileMan.onSaveALL();
         PlayerDataMap.clear();
-        unregListener();
         //注销注册玩家加入服务器事件
+        unregListener();
+        //储存最近玩家列表
+        FileMan.saveList(new File(getDataFolder(),"latelyPlayerList.txt"),latelyPlayerList);
         logger.info("插件已关闭");
     }
 }

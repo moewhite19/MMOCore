@@ -1,6 +1,5 @@
 package cn.whiteg.mmocore;
 
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -17,6 +16,7 @@ public class Setting {
     public static boolean FREQUENTLY;
     public static boolean onlineMode;
     public static File DATADIR;
+    public static int LatelyPlayerListSize;
 
     public static void reload() {
         File file = new File(MMOCore.plugin.getDataFolder(),"config.yml");
@@ -42,6 +42,7 @@ public class Setting {
         DEBUG = config.getBoolean("debug");
         DELETE_CACHE = config.getBoolean("QuitDeleteCache",false);
         FREQUENTLY = config.getBoolean("Frequently",false);
+        LatelyPlayerListSize = config.getInt("LatelyPlayerListSize",50);
 
         onlineMode = config.getBoolean("Online_Mode",false);
         String dir = config.getString("DataDir");

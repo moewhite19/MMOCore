@@ -8,3 +8,6 @@ DataDir: "plugins/MMOCore/Player"
 Frequently: false
 #服务器是否是在线模式
 Online_Mode: false
+
+#最近玩家列表最大数量
+LatelyPlayerListSize: 50

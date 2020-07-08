@@ -11,11 +11,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.io.File;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.io.*;
+import java.util.*;
 
 public class FileMan {
 
@@ -34,31 +31,35 @@ public class FileMan {
     public static void onSaveALL() {
         final Iterator<Map.Entry<UUID, DataCon>> it = MMOCore.getPlayerDataMap().entrySet().iterator();
         while (it.hasNext()) {
-            try{
-                final DataCon dc = it.next().getValue();
-                if (dc == null){
-                    it.remove();
-                    continue;
-                }
-                Set<String> keys = dc.getConfig().getKeys(false);
-                if (keys.isEmpty()){
-                    if (Setting.DEBUG){
-                        MMOCore.logger.info("清理空配置" + dc.getName());
+            synchronized (MMOCore.getPlayerDataMap()) {
+                try{
+                    final DataCon dc = it.next().getValue();
+                    if (dc == null){
+                        it.remove();
+                        continue;
                     }
-                    it.remove();
-                    continue;
-                }
-                dc.save();
-                Player player = dc.getPlayer();
-                if (player == null || !player.isOnline()){
-                    if (Setting.DEBUG){
-                        MMOCore.logger.info("清理过时离线玩家" + dc.getName());
+                    Set<String> keys = dc.getConfig().getKeys(false);
+                    if (keys.isEmpty()){
+                        if (Setting.DEBUG){
+                            MMOCore.logger.info("清理空配置" + dc.getName());
+                        }
+                        it.remove();
+                        continue;
                     }
-                    it.remove();
-                    dc.unload();
+                    dc.save();
+                    Player player = dc.getPlayer();
+                    if (player == null || !player.isOnline()){
+                        if (Setting.DEBUG){
+                            MMOCore.logger.info("清理过时离线玩家" + dc.getName());
+                        }
+                        it.remove();
+                        dc.unload();
+                    }
+                }catch (Throwable e){
+                    e.printStackTrace();
+                    //怕了线程陷入死循环
+                    break;
                 }
-            }catch (Throwable e){
-                e.printStackTrace();
             }
         }
 //        for (Map.Entry entry : MMOCore.plugin.PlayerDataMap.entrySet()) {
@@ -317,4 +318,50 @@ public class FileMan {
         if (Bukkit.isPrimaryThread()) runnable.run();
         else Bukkit.getScheduler().runTask(MMOCore.plugin,runnable);
     }
+
+
+    public static void loadList(File file,List<String> list) {
+        if (file.exists()){
+            try{
+                FileReader fr = new FileReader(file);
+                BufferedReader br = new BufferedReader(fr);
+                String f;
+                while ((f = br.readLine()) != null) {
+                    if (f.isEmpty()) continue;
+                    try{
+                        list.add(f);
+                    }catch (NumberFormatException e){
+                        e.printStackTrace();
+                    }
+                }
+                br.close();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void saveList(File file,List<String> list) {
+        try{
+            if (!file.exists()){
+                File p = file.getParentFile();
+                if (!p.exists()){
+                    p.mkdirs();
+                }
+                file.createNewFile();
+            }
+            //1、打开流
+            Writer w = new FileWriter(file);
+            Iterator<String> i = list.iterator();
+            //2、写入内容
+            while (i.hasNext()) {
+                w.write(new StringBuilder(i.next()).append('\n').toString());
+            }
+            //3、关闭流
+            w.close();
+        }catch (IOException e){
+            System.out.println("文件写入错误：" + e.getMessage());
+        }
+    }
+
 }

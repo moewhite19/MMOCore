@@ -33,6 +33,9 @@ public class delete extends CommandInterface {
 
     @Override
     public List<String> onTabComplete(CommandSender sender,Command cmd,String label,String[] args) {
-        return null;
+        if (!sender.hasPermission("whiteg.test")){
+            return null;
+        }
+        return getMatches(args,MMOCore.getLatelyPlayerList());
     }
 }
