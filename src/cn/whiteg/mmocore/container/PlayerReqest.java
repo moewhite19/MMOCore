@@ -1,17 +1,11 @@
 package cn.whiteg.mmocore.container;
 
-import cn.whiteg.mmocore.MMOCore;
+import cn.whiteg.mmocore.Setting;
 import cn.whiteg.mmocore.api.ReqestManage;
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Location;
-import org.bukkit.SoundCategory;
+import net.md_5.bungee.api.chat.*;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
 public abstract class PlayerReqest extends ReqestAbs {
     final private Player sender;
@@ -44,10 +38,7 @@ public abstract class PlayerReqest extends ReqestAbs {
 
     public boolean sendTo(Player p) {
         if (p.isOnline() && ReqestManage.addEvent(p.getName(),id,this)){
-            TextComponent a1 = new TextComponent(" §f" + sender.getDisplayName() + " §7给你发送了一个 §f" + name + "§7 请求 §3§l>>§b§l点我接受§3§l<< ");
-            a1.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/confirm " + id));
-            a1.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new ComponentBuilder("§3点我或者使用指令§a/c " + id + "§3接受" + "\n" + "§3也可以使用指令§a/d " + id + "§9拒绝").color(ChatColor.BLUE).create()));
-            p.spigot().sendMessage(a1);
+            p.spigot().sendMessage(getBaseComponentMessage());
             sender.sendMessage(" §b已向 §f" + p.getDisplayName() + " §b发送" + name + "请求");
             playsound(p);
             return true;
@@ -61,13 +52,8 @@ public abstract class PlayerReqest extends ReqestAbs {
         int i = 0;
         for (Player p : Bukkit.getServer().getOnlinePlayers()) {
             if (p == sender) continue;
-            ComponentBuilder cb = new ComponentBuilder(" §f" + sender.getDisplayName() + " §7给你发送了一个 §f" + name + "§7 请求");
-            cb.append(" §3§l>>§b§l点我接受§3§l<<");
-            cb.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/confirm " + id));
-            cb.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new BaseComponent[]{new TextComponent("§3点我或者使用指令§a/c " + id + "§3接受" + "\n" + "§3也可以使用指令§a/d " + id + "§9拒绝")}));
-            BaseComponent[] msg = cb.create();
             if (p.isOnline() && ReqestManage.addEvent(p.getName(),id,this)){
-                p.spigot().sendMessage(msg);
+                p.spigot().sendMessage(getBaseComponentMessage());
                 playsound(p);
                 i++;
             } else {
@@ -75,6 +61,17 @@ public abstract class PlayerReqest extends ReqestAbs {
             }
         }
         sender.sendMessage(" §b已发送 §f" + i + " §b个" + name + "请求");
+    }
+
+    BaseComponent[] getBaseComponentMessage() {
+        ComponentBuilder cb = new ComponentBuilder(" §f" + sender.getDisplayName() + " §7给你发送了一个 §f" + name + "§7 请求");
+        cb.append(" §b§l[接受]");
+        cb.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/confirm " + id));
+        cb.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new BaseComponent[]{new TextComponent("§3点我或者使用指令§a/c " + id + "§a接受")}));
+        cb.append(" §8§l[拒绝]");
+        cb.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/deny " + id));
+        cb.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new BaseComponent[]{new TextComponent("§3点我或者使用指令§a/d " + id + "§4拒绝")}));
+        return cb.create();
     }
 
     public Player getSender() {
