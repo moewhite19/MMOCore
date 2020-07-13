@@ -103,26 +103,7 @@ public abstract class PlayerReqest extends ReqestAbs {
 
 
     public void playsound(Player p) {
-        new BukkitRunnable() {
-            int i = 0;
-            float[] list = new float[]{0f,0.6f,0.4f};
-
-            @Override
-            public void run() {
-                if (p.isDead()){
-                    cancel();
-                    return;
-                }
-                float f = list[i];
-                if (f < 0f || f > 2f) return;
-                Location loc = p.getLocation();
-                p.playSound(loc,"block.note_block.bell",SoundCategory.PLAYERS,1,f);
-                i++;
-                if (i >= list.length){
-                    cancel();
-                }
-            }
-        }.runTaskTimer(MMOCore.plugin,0,2);
+        Setting.PlayerReqestSound.clone().playTo(p);
     }
 
     public void remove(CommandSender s) {

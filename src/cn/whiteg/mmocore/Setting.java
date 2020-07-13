@@ -1,5 +1,6 @@
 package cn.whiteg.mmocore;
 
+import cn.whiteg.mmocore.sound.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -8,7 +9,7 @@ import java.io.IOException;
 import java.util.Set;
 
 public class Setting {
-    public final static int VER = 4;
+    public final static int VER = 6;
     public static boolean DEBUG;
     public static FileConfiguration config;
     public static int Frequent;
@@ -17,6 +18,7 @@ public class Setting {
     public static boolean onlineMode;
     public static File DATADIR;
     public static int LatelyPlayerListSize;
+    public static Sound PlayerReqestSound = Sound.EMPTY;
 
     public static void reload() {
         File file = new File(MMOCore.plugin.getDataFolder(),"config.yml");
@@ -42,6 +44,9 @@ public class Setting {
         DEBUG = config.getBoolean("debug");
         DELETE_CACHE = config.getBoolean("QuitDeleteCache",false);
         FREQUENTLY = config.getBoolean("Frequently",false);
+
+        PlayerReqestSound = Sound.parseSound(config.get("PlayerReqestSound"));
+
         LatelyPlayerListSize = config.getInt("LatelyPlayerListSize",50);
 
         onlineMode = config.getBoolean("Online_Mode",false);

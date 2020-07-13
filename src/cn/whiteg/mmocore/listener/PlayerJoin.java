@@ -33,7 +33,7 @@ public class PlayerJoin implements Listener {
 
         //更新最近玩家列表
         String name = event.getPlayer().getName();
-        LinkedList<String> list = MMOCore.getLatelyPlayerList();
+        LinkedList<String> list = (LinkedList<String>) MMOCore.getLatelyPlayerList();
         list.remove(name);
         list.add(0,name);
         while (list.size() > Setting.LatelyPlayerListSize) {

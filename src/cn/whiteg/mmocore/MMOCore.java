@@ -165,7 +165,7 @@ public class MMOCore extends PluginBase {
         return getOfflineUUID(name);
     }
 
-    public static LinkedList<String> getLatelyPlayerList() {
+    public static List<String> getLatelyPlayerList() {
         return latelyPlayerList;
     }
 

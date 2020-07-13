@@ -23,8 +23,8 @@ public class suicide extends CommandInterface {
                     public void onAccept(CommandSender s) {
                         if (s instanceof Player){
                             Player p = (Player) s;
-                            p.setHealth(0);
                             p.chat("再见 这个世界");
+                            p.setHealth(0);
                         }
                     }
 
