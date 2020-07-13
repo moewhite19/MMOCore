@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 public class MainCommand extends CommandInterface {
-    final public List<String> allCommand = Arrays.asList("reload","confirm","deny","suicide");
+    final public List<String> allCommand = Arrays.asList("reload","confirm","deny","suicide", "playsound");
     final public Map<String, CommandInterface> commandMap = new HashMap<>(allCommand.size());
     final public SubCommand subCommand = new SubCommand();
 
