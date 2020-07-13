@@ -11,8 +11,8 @@ Online_Mode: false
 
 #玩家请求提示音 - 列表播放
 PlayerReqestSound:
-  #循环播放
-  loop: false
+  #循环播放次数
+  loop: 1
   #tick帧间隔
   tick: 2
   #音轨(可嵌套List实现同轨多音符)
@@ -22,23 +22,22 @@ PlayerReqestSound:
     - 'block.note_block.bell 1 0.4'
 
 #最近玩家列表最大数量(用于部分指令的Tab补全显示最近上线过的离线玩家)
-LatelyPlayerListSize: 50
-
+LatelyPlayerListSize: 100
 
 #音效的测试配置, 可在游戏里输入/mmo playsound <key> 来播放。 如: /mmo playsound Test1
-#玩家请求提示音 - 单个音效格式: [声音id] <音量:默认1> <声调:默认1> <声音类型:默认players>
+#单个音效格式: [声音id] <音量:默认1> <声调:默认1> <声音类型:默认players>
 Test1: 'block.note_block.bell 1 0 players'
 
-#玩家请求提示音 - 同轨播放
+#同轨播放
 Test2:
   - 'block.note_block.bell 1 0'
   - 'block.note_block.bit 1 0.1'
   - 'block.note_block.bass 1 0.15'
 
-
+#列表播放
 Test3:
-  #循环播放(除非插件内有写停止播放，否则会一直播放下去
-  loop: false
+  #循环播放次数(-1为无限,除非插件内有写停止播放，否则会一直播放下去
+  loop: 2
   #tick帧间隔
   tick: 5
   #音轨(可嵌套List实现同轨多音符)
@@ -53,7 +52,10 @@ Test3:
     - 'block.ancient_debris.place'
     - - 'block.note_block.bit 1 1'
       - 'block.ancient_debris.hit 1 1.2'
+      - 'block.note_block.bass 1 0.15'
     - ''
     - ''
     - - 'block.ancient_debris.place'
       - 'block.ancient_debris.place'
+    - ''
+    - ''
