@@ -82,12 +82,13 @@ public class SoundPlayer implements Sound, Runnable {
         if (progress >= track.size()){
             if (loop <= -1){ //无限循环
                 progress = 0;
-            } else if (loop == 0){ //中止循环
-                cancel();
-                return;
             } else { //循环
+                if (--loop == 0){
+                    //中止循环
+                    cancel();
+                    return;
+                }
                 progress = 0;
-                loop--;
             }
         }
 
