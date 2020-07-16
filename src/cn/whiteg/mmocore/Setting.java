@@ -16,9 +16,10 @@ public class Setting {
     public static boolean DELETE_CACHE;
     public static boolean FREQUENTLY;
     public static boolean onlineMode;
-    public static File DATADIR;
     public static int LatelyPlayerListSize;
     public static Sound PlayerReqestSound = Sound.EMPTY;
+    public static File DataDir;
+    public static File RecoveryDir;
 
     public static void reload() {
         File file = new File(MMOCore.plugin.getDataFolder(),"config.yml");
@@ -52,9 +53,10 @@ public class Setting {
         onlineMode = config.getBoolean("Online_Mode",false);
         String dir = config.getString("DataDir");
         if (dir != null){
-            DATADIR = new File(dir);
+            DataDir = new File(dir);
         } else {
-            DATADIR = new File(MMOCore.plugin.getDataFolder(),"players");
+            DataDir = new File(MMOCore.plugin.getDataFolder(),"players");
         }
+        RecoveryDir = new File(DataDir.getParentFile(),"recovery");
     }
 }

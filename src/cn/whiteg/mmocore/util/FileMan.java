@@ -69,14 +69,14 @@ public class FileMan {
 //        }
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void recovery(CommandSender sender,String name) {
         UUID uuid = MMOCore.getUUID(name);
         Player p = Bukkit.getPlayerExact(name);
         if (p != null){
             MMOCore.getPlayerDataMap().remove(uuid);
         }
-        File recoveryDir = new File(MMOCore.plugin.getDataFolder() + File.separator + "recovery");
-        File file = new File(recoveryDir + File.separator + "playerdata",name + ".dat");
+        File file = new File(Setting.RecoveryDir + File.separator + "playerdata",name + ".dat");
         File nDir = new File("world","playerdata");
         File nFile = new File(nDir,uuid.toString() + ".dat");
         if (file.exists()){
@@ -87,8 +87,8 @@ public class FileMan {
             file.renameTo(nFile);
             sender.sendMessage("已恢复玩家存档");
         }
-        file = new File(recoveryDir + File.separator + "MMOCore",name + ".yml");
-        nDir = Setting.DATADIR;
+        file = new File(Setting.RecoveryDir + File.separator + "MMOCore",name + ".yml");
+        nDir = Setting.DataDir;
         nFile = new File(nDir,uuid.toString() + ".yml");
         if (file.exists()){
             if (!nDir.exists()){
@@ -98,7 +98,7 @@ public class FileMan {
             file.renameTo(nFile);
             sender.sendMessage("已恢复数据");
         }
-        file = new File(recoveryDir + File.separator + "advancements",name + ".json");
+        file = new File(Setting.RecoveryDir + File.separator + "advancements",name + ".json");
         nDir = new File("world","advancements");
         nFile = new File(nDir,uuid.toString() + ".json");
         if (file.exists()){
@@ -116,10 +116,9 @@ public class FileMan {
 
     public static void clearUpRecovery(CommandSender sender,int day) {
         long mintime = System.currentTimeMillis() - (day * 86400000);
-        File recoveryDir = new File(MMOCore.plugin.getDataFolder() + File.separator + "recovery" + File.separator + "MMOCore");
-        if (recoveryDir.isDirectory()){
+        if (Setting.RecoveryDir.isDirectory()){
             int i = 0;
-            for (File file : recoveryDir.listFiles()) {
+            for (File file : Setting.RecoveryDir.listFiles()) {
                 if (file.lastModified() < mintime){
                     String name = file.getName();
                     int w = name.lastIndexOf('.');
@@ -134,6 +133,7 @@ public class FileMan {
         }
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void deleteRecovery(CommandSender sender,String name) {
         DataConClearRecovervEvent event = new DataConClearRecovervEvent(sender,name);
         event.call();
@@ -157,6 +157,7 @@ public class FileMan {
         sender.sendMessage("已从回收站移除 " + name);
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void clearRecovery() {
 //        UUID uuid = MMOCore.getUUID(name);
         File recoveryDir = new File(MMOCore.plugin.getDataFolder() + File.separator + "recovery");
@@ -191,59 +192,74 @@ public class FileMan {
         return false;
     }
 
+    @SuppressWarnings({"ResultOfMethodCallIgnored","SynchronizationOnLocalVariableOrMethodParameter"})
     public static void delete(CommandSender sender,DataCon dc) {
-        DataConDeleteEvent e = new DataConDeleteEvent(dc,sender);
-        e.call();
-        if (e.isCancelled()) return;
-        final Player p = Bukkit.getPlayerExact(dc.getName());
+        final UUID uuid = dc.getUUID();
         Runnable runnable = () -> {
-            CommandSender s = sender;
-            if (sender == null) s = Bukkit.getConsoleSender();
-            final UUID uuid = dc.getUUID();
-            //if (uuid == null || uuid.isEmpty()) uuid = MMOCore.getOfflineUUID(args[1]).toString();
-            MMOCore.getPlayerDataMap().remove(uuid);
-            dc.save();
-            dc.unload();
-            File recoveryDir = new File(MMOCore.plugin.getDataFolder() + File.separator + "recovery");
+            DataConDeleteEvent e = new DataConDeleteEvent(dc,sender);
+            e.call();
+            if (e.isCancelled()) return;
+            CommandSender commandSender = sender;
+            if (sender == null) commandSender = Bukkit.getConsoleSender();
+            final Player player = Bukkit.getPlayerExact(dc.getName());
+            Map<UUID, DataCon> playerDataMap = MMOCore.getPlayerDataMap();
+            synchronized (playerDataMap) {
+                MMOCore.getPlayerDataMap().remove(uuid);
+                dc.save();
+                dc.unload();
+            }
+
+            if (player != null && player.isOnline()){
+                player.kickPlayer("你被请出服务器");
+                MMOCore.logger.warning("玩家 " + dc.getName() + " 当前在线，正在尝试重新删除");
+                Bukkit.getScheduler().runTaskLater(MMOCore.plugin,() -> {
+                    delete(sender,dc);
+                },2L);
+            }
+
             File file = new File("world/playerdata",uuid.toString() + ".dat");
-            File nDir = new File(recoveryDir + File.separator + "playerdata");
+            File nDir = new File(Setting.RecoveryDir + File.separator + "playerdata");
             File nFile = new File(nDir,dc.getName() + ".dat");
-//        Logger logger = MMOCore.logger;
             if (file.exists()){
                 if (!nDir.exists()) nDir.mkdirs();
                 if (nFile.exists()) nFile.delete();
                 file.renameTo(nFile);
-                s.sendMessage("已删除玩家存档");
+                commandSender.sendMessage("已删除玩家存档");
             }
-            file = new File(Setting.DATADIR,uuid.toString() + ".yml");
-            nDir = new File(recoveryDir,"MMOCore");
+            file = new File(Setting.DataDir,uuid.toString() + ".yml");
+            nDir = new File(Setting.RecoveryDir,"MMOCore");
             nFile = new File(nDir,dc.getName() + ".yml");
             if (file.exists()){
                 if (!nDir.exists()) nDir.mkdirs();
                 if (nFile.exists()) nFile.delete();
                 file.renameTo(nFile);
-                s.sendMessage("已删除玩家数据");
+                commandSender.sendMessage("已删除玩家数据");
             }
             file = new File("world/advancements",uuid.toString() + ".json");
-            nDir = new File(recoveryDir,"advancements");
+            nDir = new File(Setting.RecoveryDir,"advancements");
             nFile = new File(nDir,dc.getName() + ".json");
             if (file.exists()){
                 if (!nDir.exists()) nDir.mkdirs();
                 if (nFile.exists()) nFile.delete();
                 file.renameTo(nFile);
-                s.sendMessage("已删除玩家进度");
+                commandSender.sendMessage("已删除玩家进度");
             }
         };
 
-        if (p != null){
-            p.kickPlayer("你被请出服务器");
-            Bukkit.getScheduler().runTaskLater(MMOCore.plugin,runnable,2L);
-        } else {
-            runnable.run();
-        }
-
+//        if (player != null && player.isOnline()){
+//            player.kickPlayer("你被请出服务器");
+//            Bukkit.getScheduler().runTaskLater(MMOCore.plugin,() -> {
+//                MMOCore.unLoad(player.getUniqueId());
+//            },2);
+//            Bukkit.getScheduler().runTaskLater(MMOCore.plugin,runnable,5L);
+//        } else {
+//            runnable.run();
+//        }
+        if (Bukkit.isPrimaryThread()) runnable.run();
+        else Bukkit.getScheduler().runTask(MMOCore.plugin,runnable);
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void rename(CommandSender sender,DataCon dc,String name,String newName) {
         if (!CommonUtils.checkName(newName)){
             sender.sendMessage("无效名称");
@@ -266,9 +282,16 @@ public class FileMan {
                         sender.sendMessage("错误: 当前新ID是在线状态");
                         return;
                     }
-                    Player p = dc.getPlayer();
-                    if (p != null) p.kickPlayer("正在帮你重命名");
-                    dc.unload();
+
+                    Player player = dc.getPlayer();
+                    //如果玩家在线
+                    if (player != null && player.isOnline()){
+                        MMOCore.logger.warning("玩家重命名时在线,正在尝试重新删除旧账户");
+                        player.kickPlayer("正在帮你重命名");
+                        Bukkit.getScheduler().runTaskLater(MMOCore.plugin,() -> {
+                            delete(sender,dc);
+                        },2);
+                    }
                     DataCon newDc = MMOCore.craftData(newName);
                     if (!newDc.isLoaded()){
                         sender.sendMessage("创建新插件数据失败");
@@ -278,6 +301,7 @@ public class FileMan {
                     event.call();
                     if (event.isCancelled()) return;
                     sender.sendMessage("创建新插件数据");
+                    //转移插件数据
                     for (String key : dc.getConfig().getKeys(true)) {
                         if (newDc.isSet(key)) continue;
                         newDc.set(key,dc.get(key));
@@ -285,7 +309,9 @@ public class FileMan {
                     newDc.save();
                     UUID uuid = dc.getUUID();
                     UUID newuuid = newDc.getUUID();
-                    //if (uuid == null || uuid.isEmpty()) uuid = MMOCore.getOfflineUUID(args[1]).toString();
+
+                    MMOCore.unLoad(uuid);
+
                     File dir = new File("world/playerdata");
                     File file = new File(dir,uuid.toString() + ".dat");
                     File newFile = new File(dir,newuuid.toString() + ".dat");
@@ -294,7 +320,7 @@ public class FileMan {
                         file.renameTo(newFile);
                         sender.sendMessage("以移动玩家数据");
                     }
-                    file = new File(Setting.DATADIR,uuid.toString() + ".yml");
+                    file = new File(Setting.DataDir,uuid.toString() + ".yml");
                     if (file.exists()){
                         file.delete();
                         sender.sendMessage("删除旧插件数据");

@@ -27,13 +27,13 @@ public class DataCon {
     public DataCon(OfflinePlayer player) {
         uuid = player.getUniqueId();
         name = player.getName();
-        file = new File(Setting.DATADIR,uuid.toString() + ".yml");
+        file = new File(Setting.DataDir,uuid.toString() + ".yml");
         if (name == null || name.isEmpty()) return;
         load(true);
     }
 
     public DataCon(UUID uuid,boolean load) {
-        file = new File(Setting.DATADIR,uuid.toString() + ".yml");
+        file = new File(Setting.DataDir,uuid.toString() + ".yml");
         this.uuid = uuid;
         if (load){
             load(false);
@@ -43,7 +43,7 @@ public class DataCon {
     public DataCon(@NotNull String name,boolean load,boolean create) {
         this.name = name;
         uuid = MMOCore.getUUID(name);
-        file = new File(Setting.DATADIR,uuid.toString() + ".yml");
+        file = new File(Setting.DataDir,uuid.toString() + ".yml");
         if (load){
             load(create);
         }

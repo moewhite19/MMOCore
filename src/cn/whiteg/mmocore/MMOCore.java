@@ -37,14 +37,16 @@ public class MMOCore extends PluginBase {
     }
 
     public static DataCon getPlayerData(OfflinePlayer player) {
-        DataCon dc = plugin.PlayerDataMap.get(player.getUniqueId());
-        if (dc != null){
+        synchronized (plugin.PlayerDataMap) {
+            DataCon dc = plugin.PlayerDataMap.get(player.getUniqueId());
+            if (dc != null){
+                return dc;
+            }
+            dc = new DataCon(player);
+            if (!dc.isLoaded()) return null;
+            plugin.PlayerDataMap.put(player.getUniqueId(),dc);
             return dc;
         }
-        dc = new DataCon(player);
-        if (!dc.isLoaded()) return null;
-        plugin.PlayerDataMap.put(player.getUniqueId(),dc);
-        return dc;
     }
 
     public static DataCon getPlayerData(UUID uuid) {
@@ -97,7 +99,7 @@ public class MMOCore extends PluginBase {
                 return true;
             }
         }
-        final File file = new File(Setting.DATADIR,uuid.toString() + ".yml");
+        final File file = new File(Setting.DataDir,uuid.toString() + ".yml");
         return file.exists();
     }
 
@@ -127,12 +129,14 @@ public class MMOCore extends PluginBase {
 
 
     public static DataCon unLoad(UUID uuid) {
-        if (Setting.DEBUG){
-            logger.info("Unload " + uuid);
+        synchronized (plugin.PlayerDataMap) {
+            if (Setting.DEBUG){
+                logger.info("Unload " + uuid);
+            }
+            DataCon dc = plugin.PlayerDataMap.remove(uuid);
+            if (dc != null) dc.unload();
+            return dc;
         }
-        DataCon dc = plugin.PlayerDataMap.remove(uuid);
-        if (dc != null) dc.unload();
-        return dc;
     }
 
     public static List<String> getLoadDataNames() {
@@ -221,4 +225,5 @@ public class MMOCore extends PluginBase {
         FileMan.saveList(new File(getDataFolder(),"latelyPlayerList.txt"),latelyPlayerList);
         logger.info("插件已关闭");
     }
+
 }

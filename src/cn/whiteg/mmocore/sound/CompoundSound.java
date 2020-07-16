@@ -51,7 +51,7 @@ public class CompoundSound implements Sound {
         }
     }
 
-    //播放给玩家
+    //停止播放
     @Override
     public void stopTo(Player player) {
         if (isEmpty()) return;
