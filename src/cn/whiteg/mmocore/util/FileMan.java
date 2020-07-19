@@ -217,33 +217,52 @@ public class FileMan {
                 },2L);
             }
 
+
             File file = new File("world/playerdata",uuid.toString() + ".dat");
             File nDir = new File(Setting.RecoveryDir + File.separator + "playerdata");
             File nFile = new File(nDir,dc.getName() + ".dat");
             if (file.exists()){
                 if (!nDir.exists()) nDir.mkdirs();
-                if (nFile.exists()) nFile.delete();
-                file.renameTo(nFile);
-                commandSender.sendMessage("已删除玩家存档");
+                if (nFile.exists()){
+                    file.delete();
+                    commandSender.sendMessage("回收站数据已存在，已删除玩家数据");
+                } else {
+                    file.renameTo(nFile);
+                    commandSender.sendMessage("已将玩家数据移动到回收站");
+                }
             }
+
+
             file = new File(Setting.DataDir,uuid.toString() + ".yml");
             nDir = new File(Setting.RecoveryDir,"MMOCore");
             nFile = new File(nDir,dc.getName() + ".yml");
             if (file.exists()){
                 if (!nDir.exists()) nDir.mkdirs();
-                if (nFile.exists()) nFile.delete();
-                file.renameTo(nFile);
-                commandSender.sendMessage("已删除玩家数据");
+                if (nFile.exists()){
+                    file.delete();
+                    commandSender.sendMessage("回收站数据已存在，已删除插件数据");
+                } else {
+                    file.renameTo(nFile);
+                    commandSender.sendMessage("已将插件数据移动到回收站");
+                }
             }
+
+
             file = new File("world/advancements",uuid.toString() + ".json");
             nDir = new File(Setting.RecoveryDir,"advancements");
             nFile = new File(nDir,dc.getName() + ".json");
+
             if (file.exists()){
                 if (!nDir.exists()) nDir.mkdirs();
-                if (nFile.exists()) nFile.delete();
-                file.renameTo(nFile);
-                commandSender.sendMessage("已删除玩家进度");
+                if (nFile.exists()){
+                    file.delete();
+                    commandSender.sendMessage("回收站进度已存在，已删除玩家进度");
+                } else {
+                    file.renameTo(nFile);
+                    commandSender.sendMessage("已将玩家进度移动到回收站");
+                }
             }
+
         };
 
 //        if (player != null && player.isOnline()){

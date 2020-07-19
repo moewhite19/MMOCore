@@ -22,7 +22,6 @@ public class PlayerJoin implements Listener {
         final Player np = Bukkit.getPlayer(name);
         if (np != null && np.getName().equalsIgnoreCase(name)){
             event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER,"服务器已存在相同ID");
-            return;
         }
     }
 
