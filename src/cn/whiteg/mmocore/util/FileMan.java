@@ -116,9 +116,10 @@ public class FileMan {
 
     public static void clearUpRecovery(CommandSender sender,int day) {
         long mintime = System.currentTimeMillis() - (day * 86400000);
-        if (Setting.RecoveryDir.isDirectory()){
+        File dir = new File(Setting.RecoveryDir,"MMOCore");
+        if (dir.isDirectory()){
             int i = 0;
-            for (File file : Setting.RecoveryDir.listFiles()) {
+            for (File file : dir.listFiles()) {
                 if (file.lastModified() < mintime){
                     String name = file.getName();
                     int w = name.lastIndexOf('.');
@@ -133,23 +134,60 @@ public class FileMan {
         }
     }
 
+    //清理没有插件数据的玩家数据
+    public static void clearWorldPlayerData(CommandSender sender) {
+        File dataDir;
+        dataDir = new File("world/playerdata");
+        clearupPlayerData(sender,dataDir);
+
+        dataDir = new File("world/advancements");
+        clearupPlayerData(sender,dataDir);
+
+        dataDir = new File("world/stats");
+        clearupPlayerData(sender,dataDir);
+    }
+
+    //检查并删除目录
+    public static void clearupPlayerData(CommandSender sender,File dataDir) {
+        if (dataDir.isDirectory()){
+            for (File file : dataDir.listFiles()) {
+                String name = file.getName();
+                int w = name.lastIndexOf('.');
+                if (w != -1){
+                    name = name.substring(0,w);
+                }
+                File dc = new File(Setting.DataDir,name + ".yml");
+                if (!dc.exists()){
+                    file.delete();
+                    sender.sendMessage("已删除: " + file);
+                }
+            }
+        }
+
+    }
+
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void deleteRecovery(CommandSender sender,String name) {
         DataConClearRecovervEvent event = new DataConClearRecovervEvent(sender,name);
         event.call();
         if (event.isCancelled()) return;
-        File recoveryDir = new File(MMOCore.plugin.getDataFolder() + File.separator + "recovery");
-        File file = new File(recoveryDir + File.separator + "playerdata",name + ".dat");
+        File file = new File(Setting.RecoveryDir + File.separator + "playerdata",name + ".dat");
         if (file.exists()){
             file.delete();
 //            sender.sendMessage("已删除回收站玩家存档");
         }
-        file = new File(recoveryDir + File.separator + "MMOCore",name + ".yml");
+        file = new File(Setting.RecoveryDir + File.separator + "MMOCore",name + ".yml");
         if (file.exists()){
             file.delete();
 //            sender.sendMessage("已删除回收站玩家数据");
         }
-        file = new File(recoveryDir + File.separator + "advancements",name + ".json");
+        file = new File(Setting.RecoveryDir + File.separator + "advancements",name + ".json");
+        if (file.exists()){
+            file.delete();
+//            sender.sendMessage("已删除回收站玩家进度");
+        }
+
+        file = new File(Setting.RecoveryDir + File.separator + "stats",name + ".json");
         if (file.exists()){
             file.delete();
 //            sender.sendMessage("已删除回收站玩家进度");
@@ -160,14 +198,13 @@ public class FileMan {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void clearRecovery() {
 //        UUID uuid = MMOCore.getUUID(name);
-        File recoveryDir = new File(MMOCore.plugin.getDataFolder() + File.separator + "recovery");
-        if (recoveryDir.exists()){
-            recoveryDir.delete();
+        if (Setting.RecoveryDir.exists()){
+            Setting.RecoveryDir.delete();
         }
     }
 
     public static String[] canRecoverys() {
-        File recoveryDir = new File(MMOCore.plugin.getDataFolder() + File.separator + "recovery" + File.separator + "MMOCore");
+        File recoveryDir = new File(Setting.RecoveryDir,"MMOCore");
         if (recoveryDir.exists()){
             String[] files = recoveryDir.list();
             assert files != null;
@@ -184,7 +221,7 @@ public class FileMan {
     }
 
     public static boolean canRecovery(String name) {
-        File recoveryDir = new File(MMOCore.plugin.getDataFolder() + File.separator + "recovery" + File.separator + "MMOCore");
+        File recoveryDir = new File(Setting.RecoveryDir,"MMOCore");
         if (recoveryDir.exists()){
             File file = new File(recoveryDir,name + ".yml");
             return file.exists();
@@ -219,7 +256,7 @@ public class FileMan {
 
 
             File file = new File("world/playerdata",uuid.toString() + ".dat");
-            File nDir = new File(Setting.RecoveryDir + File.separator + "playerdata");
+            File nDir = new File(Setting.RecoveryDir,"playerdata");
             File nFile = new File(nDir,dc.getName() + ".dat");
             if (file.exists()){
                 if (!nDir.exists()) nDir.mkdirs();
@@ -263,17 +300,21 @@ public class FileMan {
                 }
             }
 
-        };
+            file = new File("world/stats",uuid.toString() + ".json");
+            nDir = new File(Setting.RecoveryDir,"stats");
+            nFile = new File(nDir,dc.getName() + ".json");
 
-//        if (player != null && player.isOnline()){
-//            player.kickPlayer("你被请出服务器");
-//            Bukkit.getScheduler().runTaskLater(MMOCore.plugin,() -> {
-//                MMOCore.unLoad(player.getUniqueId());
-//            },2);
-//            Bukkit.getScheduler().runTaskLater(MMOCore.plugin,runnable,5L);
-//        } else {
-//            runnable.run();
-//        }
+            if (file.exists()){
+                if (!nDir.exists()) nDir.mkdirs();
+                if (nFile.exists()){
+                    file.delete();
+                    commandSender.sendMessage("回收站状态已存在，已删除玩家进度");
+                } else {
+                    file.renameTo(nFile);
+                    commandSender.sendMessage("已将玩家状态移动到回收站");
+                }
+            }
+        };
         if (Bukkit.isPrimaryThread()) runnable.run();
         else Bukkit.getScheduler().runTask(MMOCore.plugin,runnable);
     }
@@ -344,6 +385,7 @@ public class FileMan {
                         file.delete();
                         sender.sendMessage("删除旧插件数据");
                     }
+
                     dir = new File("world/advancements");
                     file = new File(dir,uuid.toString() + ".json");
                     newFile = new File(dir,newuuid.toString() + ".json");
@@ -351,6 +393,15 @@ public class FileMan {
                         file.renameTo(newFile);
                         if (newFile.exists()) newFile.delete();
                         sender.sendMessage("已转移进度");
+                    }
+
+                    dir = new File("world/stats");
+                    file = new File(dir,uuid.toString() + ".json");
+                    newFile = new File(dir,newuuid.toString() + ".json");
+                    if (file.exists()){
+                        file.renameTo(newFile);
+                        if (newFile.exists()) newFile.delete();
+                        sender.sendMessage("已转移状态");
                     }
                     sender.sendMessage("重命名完成");
                 }
@@ -364,7 +415,7 @@ public class FileMan {
         else Bukkit.getScheduler().runTask(MMOCore.plugin,runnable);
     }
 
-
+    //加载列表
     public static void loadList(File file,List<String> list) {
         if (file.exists()){
             try{
@@ -386,6 +437,7 @@ public class FileMan {
         }
     }
 
+    //储存列表
     public static void saveList(File file,List<String> list) {
         try{
             if (!file.exists()){
@@ -395,12 +447,13 @@ public class FileMan {
                 }
                 file.createNewFile();
             }
+            Iterator<String> i = list.iterator();
             //1、打开流
             Writer w = new FileWriter(file);
-            Iterator<String> i = list.iterator();
             //2、写入内容
             while (i.hasNext()) {
-                w.write(new StringBuilder(i.next()).append('\n').toString());
+                w.write(i.next());
+                if (i.hasNext()) w.write('\n');
             }
             //3、关闭流
             w.close();
