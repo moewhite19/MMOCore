@@ -2,11 +2,13 @@ package cn.whiteg.mmocore.sound;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -97,7 +99,15 @@ public class SoundPlayer implements Sound, Runnable {
             Map<Player, Location> map = new HashMap<>(Bukkit.getOnlinePlayers().size());
             if (!locations.isEmpty()){
                 for (Location location : locations) {
-                    for (LivingEntity entity : location.getNearbyLivingEntities(getVolume() * 8)) {
+                    World world = location.getWorld();
+                    if (world == null) return;
+                    @NotNull Collection<Entity> entitys;
+                    if (getVolume() > 16) entitys = world.getEntities();
+                    else {
+                        double r = getVolume() * 16;
+                        entitys = world.getNearbyEntities(location,r,r,r);
+                    }
+                    for (Entity entity : entitys) {
                         if (entity instanceof Player) map.put((Player) entity,location);
                     }
                 }

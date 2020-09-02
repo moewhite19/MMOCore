@@ -1,8 +1,8 @@
 package cn.whiteg.mmocore.sound;
 
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -63,10 +63,15 @@ public class CompoundSound implements Sound {
     @Override
     public void stopTo(Location location) {
         if (isEmpty()) return;
-        Collection<LivingEntity> entitys;
+        Collection<Entity> entitys;
         float volume = getVolume();
-        if (volume > 16) entitys = location.getWorld().getLivingEntities();
-        else entitys = location.getNearbyLivingEntities(volume * 8);
+        World world = location.getWorld();
+        if (world == null) return;
+        if (volume > 16) entitys = world.getEntities();
+        else {
+            double r = volume * 16;
+            entitys = world.getNearbyEntities(location,r,r,r);
+        }
         for (Entity entity : entitys) {
             if (entity instanceof Player){
                 for (Sound sound : list) {

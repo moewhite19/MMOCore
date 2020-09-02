@@ -2,8 +2,8 @@ package cn.whiteg.mmocore.sound;
 
 import org.bukkit.Location;
 import org.bukkit.SoundCategory;
+import org.bukkit.World;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
@@ -80,11 +80,17 @@ public class SingleSound implements Sound {
         player.stopSound(sound,SoundCategory.PLAYERS);
     }
 
+    //播放到指定位置
     public void stopTo(Location location) {
         if (isEmpty()) return;
-        Collection<LivingEntity> entitys;
-        if (volume > 8) entitys = location.getWorld().getLivingEntities();
-        else entitys = location.getNearbyLivingEntities(volume * 8);
+        Collection<Entity> entitys;
+        World world = location.getWorld();
+        if (world == null) return;
+        if (volume > 16) entitys = world.getEntities();
+        else {
+            double r = volume * 16;
+            entitys = world.getNearbyEntities(location,r,r,r);
+        }
         for (Entity entity : entitys) {
             if (entity instanceof Player){
                 ((Player) entity).stopSound(sound,SoundCategory.PLAYERS);
