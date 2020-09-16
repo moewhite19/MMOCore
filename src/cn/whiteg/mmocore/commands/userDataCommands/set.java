@@ -2,8 +2,8 @@ package cn.whiteg.mmocore.commands.userDataCommands;
 
 import cn.whiteg.mmocore.DataCon;
 import cn.whiteg.mmocore.MMOCore;
-import cn.whiteg.mmocore.common.CommandInterface;
 import cn.whiteg.mmocore.MainCommand;
+import cn.whiteg.mmocore.common.CommandInterface;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -22,6 +22,8 @@ public class set extends CommandInterface {
             return true;
         }
         Object val = args[3];
+        String pat = args[2];
+
         if (args.length == 4){
             DataCon dc = MMOCore.getPlayerData(args[1]);
             if (dc == null){
@@ -40,8 +42,8 @@ public class set extends CommandInterface {
                 if (d != 0) val = d;
             }
 
-            dc.set(args[2],val);
-            sender.sendMessage("设置字符串 " + args[1] + "为 " + val);
+            dc.set(pat,val);
+            sender.sendMessage("设置 " + dc.getName() + " 的 数据节点 " + pat + "为 " + val);
         } else sender.sendMessage("参数有误");
 
         //(CraftPlayer)player.
