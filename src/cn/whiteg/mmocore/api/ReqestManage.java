@@ -37,12 +37,14 @@ public class ReqestManage {
         return true;
     }
 
+    //设置事件
     public static void setEvent(final String id,final String name,final Reqest reqest) {
         final ReqestContainer cf = getContainer(id,true);
         cf.addEvent(name,reqest);
         start();
     }
 
+    //添加事件,返回是否添加成功
     public static boolean addEvent(final String id,final String name,final Reqest reqest) {
         final ReqestContainer cf = getContainer(id,true);
         if (cf.addEvent(name,reqest)){
@@ -72,16 +74,8 @@ public class ReqestManage {
         return true;
     }
 
-    public static boolean accept(final String id,final String name) {
-        Reqest reqest = getEvent(id,name);
-        if (reqest == null) return false;
-        reqest.accept(null);
-        reqest.remove();
-        return true;
-    }
-
-    public static boolean accept(CommandSender sender,final String id,final String name) {
-        Reqest reqest = getEvent(id,name);
+    public static boolean accept(CommandSender sender,final String id,final String session) {
+        Reqest reqest = getEvent(id,session);
         if (reqest == null) return false;
         reqest.accept(sender);
         reqest.remove();

@@ -255,7 +255,8 @@ public class FileMan {
             }
 
 
-            File file = new File("world/playerdata",uuid.toString() + ".dat");
+            File file;
+            file = new File("world/playerdata",uuid.toString() + ".dat");
             File nDir = new File(Setting.RecoveryDir,"playerdata");
             File nFile = new File(nDir,dc.getName() + ".dat");
             if (file.exists()){
@@ -268,6 +269,9 @@ public class FileMan {
                     commandSender.sendMessage("已将玩家数据移动到回收站");
                 }
             }
+
+            file = new File("world/playerdata",uuid.toString() + ".dat_old");
+            if (file.exists()) file.delete(); //删除旧文件
 
 
             file = new File(Setting.DataDir,uuid.toString() + ".yml");
@@ -366,6 +370,8 @@ public class FileMan {
                         if (newDc.isSet(key)) continue;
                         newDc.set(key,dc.get(key));
                     }
+                    //设置曾用名
+                    newDc.set("NameOnceUsed",name);
                     newDc.save();
                     UUID uuid = dc.getUUID();
                     UUID newuuid = newDc.getUUID();
