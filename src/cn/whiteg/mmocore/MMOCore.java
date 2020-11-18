@@ -5,6 +5,7 @@ import cn.whiteg.mmocore.listener.PlayerJoin;
 import cn.whiteg.mmocore.listener.PlayerQuit;
 import cn.whiteg.mmocore.listener.SafeNumEven;
 import cn.whiteg.mmocore.listener.WorldSaveListener;
+import cn.whiteg.mmocore.util.DataIterator;
 import cn.whiteg.mmocore.util.FileMan;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -82,6 +83,11 @@ public class MMOCore extends PluginBase {
             }
             return null;
         }
+    }
+
+    public static Iterator<DataCon> iteratorPlayerData() {
+        File[] files = Setting.DataDir.listFiles();
+        return new DataIterator(files);
     }
 
     public static DataCon getPlayerData(CommandSender sender) {

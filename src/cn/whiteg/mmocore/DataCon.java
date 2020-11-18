@@ -16,8 +16,11 @@ import java.io.IOException;
 import java.util.UUID;
 
 public class DataCon {
+    static final private UUID zeroUUID = UUID.randomUUID();
+    static final private String NamePath = "Player.name";
+    static final private String UUIDPath = "Player.uuid";
     final private File file;
-    final private UUID uuid;
+    private UUID uuid;
     private String name;
     private boolean change = false;
     private FileConfiguration YMLFile = null;
@@ -49,6 +52,11 @@ public class DataCon {
         }
     }
 
+    public DataCon(File file) {
+        this.file = file;
+        load(false);
+    }
+
     public boolean hasFile() {
         return file.exists();
     }
@@ -57,8 +65,23 @@ public class DataCon {
         if (file.exists()){
             YMLFile = YamlConfiguration.loadConfiguration(file);
             loaded = true;
+            String data;
+            data = YMLFile.getString(NamePath);
             if (name == null){
-                name = YMLFile.getString("Player.name","Null");
+                name = data;
+            } else if (!name.equals(data)){
+                YMLFile.set(NamePath,name);
+            }
+            data = YMLFile.getString(UUIDPath,zeroUUID.toString());
+            if (uuid == null){
+                try{
+                    uuid = UUID.fromString(data);
+                }catch (Exception e){
+                    e.printStackTrace();
+                    uuid = zeroUUID;
+                }
+            } else if (!uuid.toString().equals(data)){
+                YMLFile.set(UUIDPath,uuid);
             }
             return true;
         } else if (create){
