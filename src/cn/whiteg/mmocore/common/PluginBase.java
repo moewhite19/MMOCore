@@ -10,6 +10,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public class PluginBase extends JavaPlugin {
@@ -49,6 +50,11 @@ public class PluginBase extends JavaPlugin {
         return true;
     }
 
+    /**
+     * 卸载事件
+     *
+     * @param listener 事件对象
+     */
     public void unregListener(Listener listener) {
         //注销事件
         Class listenerClass = listener.getClass();
