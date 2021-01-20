@@ -16,9 +16,9 @@ import java.io.IOException;
 import java.util.UUID;
 
 public class DataCon {
-    static final private UUID zeroUUID = UUID.randomUUID();
-    static final private String NamePath = "Player.name";
-    static final private String UUIDPath = "Player.uuid";
+    public static final String NamePath = "Player.name";
+    public static final String UUIDPath = "Player.uuid";
+    //    public static final UUID zeroUUID = UUID.fromString("00000000-0000-0000-0000-000000000000");
     final private File file;
     private UUID uuid;
     private String name;
@@ -66,23 +66,21 @@ public class DataCon {
             YMLFile = YamlConfiguration.loadConfiguration(file);
             loaded = true;
             String data;
-            data = YMLFile.getString(NamePath);
+            data = YMLFile.getString(NamePath,"Null");
             if (name == null){
                 name = data;
             } else if (!name.equals(data)){
                 YMLFile.set(NamePath,name);
+                onSet();
             }
-            data = YMLFile.getString(UUIDPath,zeroUUID.toString());
+            data = YMLFile.getString(UUIDPath);
             if (uuid == null){
-                try{
-                    uuid = UUID.fromString(data);
-                }catch (Exception e){
-                    e.printStackTrace();
-                    uuid = zeroUUID;
-                }
+                uuid = MMOCore.getUUID(name);
             } else if (!uuid.toString().equals(data)){
-                YMLFile.set(UUIDPath,uuid);
+                YMLFile.set(UUIDPath,uuid.toString());
+                onSet();
             }
+            save();
             return true;
         } else if (create){
             init();
@@ -103,8 +101,8 @@ public class DataCon {
 
     public void init() {
         if (YMLFile == null) YMLFile = new YamlConfiguration();
-        YMLFile.set("Player.name",name);
-        YMLFile.set("Player.uuid",uuid.toString());
+        YMLFile.set(NamePath,name);
+        YMLFile.set(UUIDPath,uuid.toString());
         YMLFile.set("Player.join_time",System.currentTimeMillis());
     }
 

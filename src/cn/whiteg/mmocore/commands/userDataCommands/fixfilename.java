@@ -1,7 +1,7 @@
 package cn.whiteg.mmocore.commands.userDataCommands;
 
+import cn.whiteg.mmocore.Setting;
 import cn.whiteg.mmocore.common.CommandInterface;
-import cn.whiteg.mmocore.MMOCore;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -17,16 +17,16 @@ public class fixfilename extends CommandInterface {
             sender.sendMessage("§b权限不足");
             return true;
         }
-        File dir = new File(MMOCore.plugin.getDataFolder() , "Player");
-        if(!dir.isDirectory()){
+        File dir = Setting.DataDir;
+        if (!dir.isDirectory()){
             sender.sendMessage("文件夹类型出错");
         }
-        for(File f : dir.listFiles()){
+        for (File f : dir.listFiles()) {
             try{
                 YamlConfiguration y = YamlConfiguration.loadConfiguration(f);
                 String name = y.getString("Player.uuid");
-                if(name == null || name.isEmpty()) continue;
-                File newFile = new File(f.getParentFile() , name.toLowerCase() + ".yml");
+                if (name == null || name.isEmpty()) continue;
+                File newFile = new File(f.getParentFile(),name.toLowerCase() + ".yml");
                 f.renameTo(newFile);
             }catch (Exception e){
                 sender.sendMessage("重命名出错" + f);

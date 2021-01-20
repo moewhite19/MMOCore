@@ -1,0 +1,39 @@
+package cn.whiteg.mmocore.commands.mainCommand;
+
+import cn.whiteg.mmocore.MMOCore;
+import cn.whiteg.mmocore.common.CommandInterface;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
+
+import java.util.List;
+
+public class maintenance extends CommandInterface implements Listener {
+    boolean enable = false;
+
+    @Override
+    public boolean onCommand(CommandSender sender,Command cmd,String label,String[] args) {
+        if (!sender.hasPermission("whiteg.test")){
+            sender.sendMessage("§b权限不足");
+            return true;
+        }
+        enable = !enable;
+        if (enable) MMOCore.plugin.regListener(this);
+        else MMOCore.plugin.unregListener(this);
+        sender.sendMessage("§b已" + (enable ? "§a开启" : "§c关闭") + "§b维护模式");
+        return true;
+    }
+
+    @EventHandler
+    public void onLogin(AsyncPlayerPreLoginEvent event) {
+        if (!enable) return;
+        event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_WHITELIST,"服务器当前正在维护");
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender,Command cmd,String label,String[] args) {
+        return null;
+    }
+}
