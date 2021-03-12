@@ -16,7 +16,7 @@ import java.util.Objects;
 public class imop extends HasCommandInterface {
 
     @Override
-    public boolean executor(CommandSender sender,Command cmd,String label,String[] args) {
+    public boolean executo(CommandSender sender,Command cmd,String label,String[] args) {
         if (args.length == 1){
             if (args[0].equals("esshomes")){
                 File dir = new File(MMOCore.plugin.getDataFolder(),"Player");

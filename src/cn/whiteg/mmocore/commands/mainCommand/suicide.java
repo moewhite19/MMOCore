@@ -14,7 +14,7 @@ import java.util.List;
 public class suicide extends HasCommandInterface {
 
     @Override
-    public boolean executor(CommandSender sender,Command cmd,String label,String[] args) {
+    public boolean executo(CommandSender sender,Command cmd,String label,String[] args) {
         if (sender instanceof Player){
             Player player = (Player) sender;
             final Reqest reqest = new ReqestAbs() {

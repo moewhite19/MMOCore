@@ -14,7 +14,7 @@ public class test extends HasCommandInterface {
     }
 
     @Override
-    public boolean executor(CommandSender sender,Command cmd,String label,String[] args) {
+    public boolean executo(CommandSender sender,Command cmd,String label,String[] args) {
         sender.sendMessage("插件 " + plugin);
         return true;
     }

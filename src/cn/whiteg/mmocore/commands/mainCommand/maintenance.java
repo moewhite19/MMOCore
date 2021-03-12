@@ -14,7 +14,7 @@ public class maintenance extends HasCommandInterface implements Listener {
     boolean enable = false;
 
     @Override
-    public boolean executor(CommandSender sender,Command cmd,String label,String[] args) {
+    public boolean executo(CommandSender sender,Command cmd,String label,String[] args) {
         enable = !enable;
         if (enable) MMOCore.plugin.regListener(this);
         else MMOCore.plugin.unregListener(this);

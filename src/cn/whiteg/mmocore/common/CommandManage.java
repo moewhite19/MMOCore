@@ -42,7 +42,7 @@ public class CommandManage extends CommandInterface {
                     if (i == -1) continue;
                     String path = url.replace('/','.').substring(0,i);
                     try{
-                        Class<?> clazz = Class.forName(path);
+                        Class<?> clazz = plugin.getClass().getClassLoader().loadClass(path);
                         if (CommandInterface.class.isAssignableFrom(clazz)){
                             CommandInterface ci = null;
                             //优先使用传入插件对象为参数的构造函数

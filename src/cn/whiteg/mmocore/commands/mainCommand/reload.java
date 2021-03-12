@@ -8,7 +8,7 @@ import org.bukkit.command.CommandSender;
 public class reload extends HasCommandInterface {
 
     @Override
-    public boolean executor(CommandSender sender,Command cmd,String label,String[] args) {
+    public boolean executo(CommandSender sender,Command cmd,String label,String[] args) {
         MMOCore.plugin.onReload();
         return true;
     }
