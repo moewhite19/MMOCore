@@ -18,7 +18,7 @@ public class playsound extends CommandInterface {
         if (!sender.hasPermission("whiteg.test")) return false;
         if (args.length == 2){
             if (sender instanceof Player){
-                Sound sound = Sound.parseSound(Setting.config.get(args[1]));
+                Sound sound = Sound.parseYml(Setting.config.get(args[1]));
                 if (sound.isEmpty()){
                     sender.sendMessage("无效音效");
                     return false;
@@ -32,7 +32,7 @@ public class playsound extends CommandInterface {
                 sender.sendMessage("找不到玩家");
                 return false;
             }
-            Sound sound = Sound.parseSound(Setting.config.get(args[1]));
+            Sound sound = Sound.parseYml(Setting.config.get(args[1]));
             if (sound.isEmpty()){
                 sender.sendMessage("无效音效");
                 return false;

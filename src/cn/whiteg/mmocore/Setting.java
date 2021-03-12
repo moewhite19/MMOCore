@@ -46,7 +46,7 @@ public class Setting {
         DELETE_CACHE = config.getBoolean("QuitDeleteCache",false);
         FREQUENTLY = config.getBoolean("Frequently",false);
 
-        PlayerReqestSound = Sound.parseSound(config.get("PlayerReqestSound"));
+        PlayerReqestSound = Sound.parseYml(config.get("PlayerReqestSound"));
 
         LatelyPlayerListSize = config.getInt("LatelyPlayerListSize",50);
 

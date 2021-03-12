@@ -34,7 +34,7 @@ public class SoundPlayer implements Sound, Runnable {
         if (rawList == null) throw new IllegalArgumentException("无效配置: " + cs.getName());
         List<Sound> list = new ArrayList<>(rawList.size());
         for (Object str : rawList) {
-            list.add(Sound.parseSound(str));
+            list.add(Sound.parseYml(str));
         }
         return new SoundPlayer(plugin,list,cs.getInt("loop",1),cs.getInt("tick",1));
     }

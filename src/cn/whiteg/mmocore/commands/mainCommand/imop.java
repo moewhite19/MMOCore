@@ -1,7 +1,7 @@
 package cn.whiteg.mmocore.commands.mainCommand;
 
-import cn.whiteg.mmocore.common.CommandInterface;
 import cn.whiteg.mmocore.MMOCore;
+import cn.whiteg.mmocore.common.CommandInterface;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
@@ -26,18 +26,16 @@ public class imop extends CommandInterface {
                         YamlConfiguration con = YamlConfiguration.loadConfiguration(file);
                         YamlConfiguration ec = YamlConfiguration.loadConfiguration(ef);
                         ConfigurationSection homes = ec.getConfigurationSection("homes");
-                        if (homes == null){
-                            MMOCore.logger.info("跳过" + file.getName());
-                            continue;
+                        if (homes != null){
+                            con.set("homes",homes);
                         }
-                        con.set("homes",homes);
                         try{
                             con.save(file);
                         }catch (IOException e){
                             e.printStackTrace();
                         }
                     }
-                }else {
+                } else {
                     sender.sendMessage("未知选项");
                 }
 

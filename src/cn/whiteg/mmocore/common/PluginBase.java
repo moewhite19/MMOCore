@@ -29,10 +29,15 @@ public class PluginBase extends JavaPlugin {
     }
 
     public void unregListener() {
-        for (Map.Entry<String, Listener> entry : listenerMap.entrySet()) {
-            unregListener(entry.getValue());
+        try{
+            for (Map.Entry<String, Listener> entry : listenerMap.entrySet()) {
+                unregListener(entry.getValue());
+            }
+            listenerMap.clear();
+        }catch (ConcurrentModificationException ignored){
+        }catch (Exception e){
+            e.printStackTrace();
         }
-        listenerMap.clear();
     }
 
 

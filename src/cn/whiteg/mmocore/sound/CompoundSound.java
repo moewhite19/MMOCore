@@ -22,7 +22,7 @@ public class CompoundSound implements Sound {
         for (Object str : args) {
             if (str instanceof String){
                 list.add(SingleSound.load((String) str));
-            } else list.add(Sound.parseSound(str));
+            } else list.add(Sound.parseYml(str));
         }
         return new CompoundSound(list);
     }

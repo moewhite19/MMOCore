@@ -7,6 +7,7 @@ import cn.whiteg.mmocore.container.ReqestAbs;
 import net.md_5.bungee.api.chat.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import java.util.List;

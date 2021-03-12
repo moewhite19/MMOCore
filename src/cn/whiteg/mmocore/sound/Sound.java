@@ -11,8 +11,15 @@ public interface Sound {
     //空音效
     SingleSound EMPTY = new SingleSound(null,0F,0F);
 
-    //从配置文件加载音效
+
+    //旧方法名
+    @Deprecated
     static Sound parseSound(Object object) {
+        return parseYml(object);
+    }
+
+    //从配置文件加载音效
+    static Sound parseYml(Object object) {
         if (object == null) return EMPTY;
         if (object instanceof String){
             return SingleSound.load((String) object);
