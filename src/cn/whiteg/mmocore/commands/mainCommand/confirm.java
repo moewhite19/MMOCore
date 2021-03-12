@@ -5,7 +5,6 @@ import cn.whiteg.mmocore.common.CommandInterface;
 import cn.whiteg.mmocore.container.ReqestContainer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -16,10 +15,10 @@ public class confirm extends CommandInterface {
     @Override
     public boolean onCommand(@NotNull CommandSender sender,@NotNull Command cmd,@NotNull String label,String[] args) {
         boolean r = false;
-        if (args.length == 1){
+        if (args.length == 0){
             r = ReqestManage.accept(sender,sender.getName());
-        } else if (args.length == 2){
-            r = ReqestManage.accept(sender,sender.getName(),args[1]);
+        } else if (args.length == 1){
+            r = ReqestManage.accept(sender,sender.getName(),args[0]);
         }
         if (!r){
             sender.sendMessage("§b没有待确认事件");
@@ -29,11 +28,16 @@ public class confirm extends CommandInterface {
 
     @Override
     public List<String> onTabComplete(CommandSender sender,Command cmd,String label,String[] args) {
-        if (args.length == 2){
+        if (args.length == 1){
             ReqestContainer ce = ReqestManage.confirmMap.get(sender.getName());
             if (ce == null) return null;
-            return getMatches(args[1],new ArrayList<>(ce.getKeys()));
+            return getMatches(args[0],new ArrayList<>(ce.getKeys()));
         }
         return null;
+    }
+
+    @Override
+    public String getDescription() {
+        return "接收请求";
     }
 }

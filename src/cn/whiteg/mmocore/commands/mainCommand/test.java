@@ -7,17 +7,18 @@ import org.bukkit.command.CommandSender;
 
 import java.util.List;
 
-public class reload extends CommandInterface {
+public class test extends CommandInterface {
 
-    @Override
-    public boolean onCommand(CommandSender sender,Command cmd,String label,String[] args) {
-        MMOCore.plugin.onReload();
-        return true;
+    final private MMOCore plugin;
+
+    public test(MMOCore plugin) {
+        this.plugin = plugin;
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender,Command cmd,String label,String[] args) {
-        return null;
+    public boolean onCommand(CommandSender sender,Command cmd,String label,String[] args) {
+        sender.sendMessage("插件 " + plugin);
+        return true;
     }
 
     @Override

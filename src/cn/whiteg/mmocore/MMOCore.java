@@ -1,5 +1,6 @@
 package cn.whiteg.mmocore;
 
+import cn.whiteg.mmocore.common.CommandManage;
 import cn.whiteg.mmocore.common.PluginBase;
 import cn.whiteg.mmocore.listener.PlayerJoin;
 import cn.whiteg.mmocore.listener.PlayerQuit;
@@ -12,6 +13,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -26,7 +28,7 @@ public class MMOCore extends PluginBase {
     public static MMOCore plugin;
     public static LinkedList<String> latelyPlayerList = new LinkedList<>(); //最近玩家列表
     private final Map<UUID, DataCon> PlayerDataMap = Collections.synchronizedMap(new HashMap<>());
-    public MainCommand mainCommand;
+    public CommandManage mainCommand;
     public UserDataCommand userDataCommand;
 
     public MMOCore() {
@@ -196,13 +198,12 @@ public class MMOCore extends PluginBase {
         logger.info("开始加载插件");
         reload();
         if (Setting.DEBUG) logger.info("§a调试模式已开启");
-        PluginCommand pc = getCommand("mmocore");
-        if (pc != null){
-            mainCommand = new MainCommand();
-            pc.setExecutor(mainCommand);
-            pc.setTabCompleter(mainCommand);
-        }
-        pc = getCommand("userdata");
+
+        mainCommand = new CommandManage(this,"cn/whiteg/mmocore/commands/mainCommand/");
+        mainCommand.setExecutor();
+
+        //旧的指令注册方式，懒得改了x
+        @Nullable PluginCommand pc = getCommand("userdata");
         if (pc != null){
             userDataCommand = new UserDataCommand();
             pc.setExecutor(userDataCommand);

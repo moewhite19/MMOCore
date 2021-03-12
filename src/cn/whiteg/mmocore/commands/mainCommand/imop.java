@@ -16,36 +16,37 @@ public class imop extends CommandInterface {
 
     @Override
     public boolean onCommand(CommandSender sender,Command cmd,String label,String[] args) {
-        if (sender.hasPermission("whiteg.test")){
-            if (args.length == 2){
-                if (args[1].equals("esshomes")){
-                    File dir = new File(MMOCore.plugin.getDataFolder(),"Player");
-                    for (File file : Objects.requireNonNull(dir.listFiles())) {
-                        MMOCore.logger.info("导入" + file.getName());
-                        File ef = new File("plugins" + File.separator + "Essentials" + File.separator + "userdata" + File.separator + file.getName());
-                        YamlConfiguration con = YamlConfiguration.loadConfiguration(file);
-                        YamlConfiguration ec = YamlConfiguration.loadConfiguration(ef);
-                        ConfigurationSection homes = ec.getConfigurationSection("homes");
-                        if (homes != null){
-                            con.set("homes",homes);
-                        }
-                        try{
-                            con.save(file);
-                        }catch (IOException e){
-                            e.printStackTrace();
-                        }
+        if (args.length == 1){
+            if (args[0].equals("esshomes")){
+                File dir = new File(MMOCore.plugin.getDataFolder(),"Player");
+                for (File file : Objects.requireNonNull(dir.listFiles())) {
+                    MMOCore.logger.info("导入" + file.getName());
+                    File ef = new File("plugins" + File.separator + "Essentials" + File.separator + "userdata" + File.separator + file.getName());
+                    YamlConfiguration con = YamlConfiguration.loadConfiguration(file);
+                    YamlConfiguration ec = YamlConfiguration.loadConfiguration(ef);
+                    ConfigurationSection homes = ec.getConfigurationSection("homes");
+                    if (homes != null){
+                        con.set("homes",homes);
                     }
-                } else {
-                    sender.sendMessage("未知选项");
+                    try{
+                        con.save(file);
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
                 }
-
             } else {
-                sender.sendMessage("参数错误");
+                sender.sendMessage("未知选项");
             }
+
         } else {
-            sender.sendMessage("阁下没有权限");
+            sender.sendMessage("参数错误");
         }
         return false;
+    }
+
+    @Override
+    public boolean canUseCommand(CommandSender sender) {
+        return sender.hasPermission("whiteg.test");
     }
 
     @Override

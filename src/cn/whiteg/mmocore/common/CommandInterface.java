@@ -53,4 +53,19 @@ public abstract class CommandInterface implements CommandExecutor, TabCompleter 
     public List<String> onTabComplete(CommandSender sender,Command cmd,String label,String[] args) {
         return PlayersList(args);
     }
+
+    //获取指令名称
+    public String getName() {
+        return getClass().getSimpleName();
+    }
+
+    //获取指令介绍
+    public String getDescription() {
+        return "";
+    }
+
+    //发送者是否可以使用指令
+    public boolean canUseCommand(CommandSender sender) {
+        return true;
+    }
 }

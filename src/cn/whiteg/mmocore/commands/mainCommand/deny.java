@@ -22,15 +22,15 @@ public class deny extends CommandInterface {
                 sender.sendMessage(msg_f);
                 return false;
             }
-            if (args.length == 1){
+            if (args.length == 0){
                 final Reqest reqest = cf.getLastReqest();
                 if (reqest != null){
                     cf.getLastReqest().deny(sender);
                     return true;
                 }
                 sender.sendMessage(msg_f);
-            } else if (args.length == 2){
-                final Reqest reqest = cf.getRequest(args[1]);
+            } else if (args.length == 1){
+                final Reqest reqest = cf.getRequest(args[0]);
                 if (reqest != null){
                     reqest.deny(sender);
                     return true;
@@ -48,12 +48,17 @@ public class deny extends CommandInterface {
     @Override
     public List<String> onTabComplete(CommandSender sender,Command cmd,String label,String[] args) {
         if (sender instanceof Player){
-            if (args.length == 2){
+            if (args.length == 1){
                 ReqestContainer ce = ReqestManage.getContainer(sender.getName());
                 if (ce == null) return null;
-                return getMatches(args[1],new ArrayList<>(ce.getKeys()));
+                return getMatches(args[0],new ArrayList<>(ce.getKeys()));
             }
         }
         return null;
+    }
+
+    @Override
+    public String getDescription() {
+        return "拒绝请求";
     }
 }

@@ -5,6 +5,7 @@ import org.bukkit.SoundCategory;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
@@ -60,9 +61,10 @@ public class SingleSound implements Sound {
     //在指定位置播放
     public void playTo(Location location) {
         if (isEmpty()) return;
-        location.getWorld().playSound(location,sound,SoundCategory.PLAYERS,volume,pitch);
+        @Nullable World world = location.getWorld();
+        if (world != null) world.playSound(location,sound,SoundCategory.PLAYERS,volume,pitch);
     }
-
+    
     //播放给玩家
     public void playTo(Player player) {
         playTo(player,player.getLocation());

@@ -2,7 +2,7 @@ package cn.whiteg.mmocore.commands.userDataCommands;
 
 import cn.whiteg.mmocore.DataCon;
 import cn.whiteg.mmocore.MMOCore;
-import cn.whiteg.mmocore.MainCommand;
+import cn.whiteg.mmocore.common.CommandManage;
 import cn.whiteg.mmocore.common.CommandInterface;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -54,12 +54,12 @@ public class set extends CommandInterface {
     public List<String> onTabComplete(CommandSender sender,Command cmd,String label,String[] args) {
         if (sender.hasPermission("whiteg.test")){
             if (args.length == 2){
-                return MainCommand.getMatches(args[1],MMOCore.getLoadDataNames());
+                return CommandManage.getMatches(args[1],MMOCore.getLoadDataNames());
             }
             if (args.length == 3){
                 DataCon dc = MMOCore.getPlayerData(args[1]);
                 if (dc != null){
-                    return MainCommand.getMatches(args[2],new ArrayList<String>(dc.getConfig().getKeys(true)));
+                    return CommandManage.getMatches(args[2],new ArrayList<String>(dc.getConfig().getKeys(true)));
                 }
             }
         }

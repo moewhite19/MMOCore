@@ -1,54 +1,46 @@
 package cn.whiteg.mmocore;
 
 import cn.whiteg.mmocore.common.CommandInterface;
+import cn.whiteg.mmocore.util.PluginUtil;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 
-import java.util.*;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class UserDataCommand implements CommandExecutor, TabCompleter {
-    private Map<String, CommandInterface> CommandMap = new HashMap();
-    private String[] AllCmd;
+    final private HashMap<String, CommandInterface> commandMap;
+
     public UserDataCommand() {
-        AllCmd = new String[]{"load","reload","save","get","set", "unset","list","delete","fixfilename","delete","getuuid","unload" , "create", "rename" , "recovery", "clearup", "clearplayerdata"};
-        for (int i = 0; i < AllCmd.length; i++) {
-            try{
-                Class c = Class.forName("cn.whiteg.mmocore.commands.userDataCommands." + AllCmd[i]);
-                regCommand(AllCmd[i],(CommandInterface) c.newInstance());
-            }catch (ClassNotFoundException | InstantiationException | IllegalAccessException e){
-                e.printStackTrace();
+        HashMap<String, CommandInterface> map = new HashMap<>();
+        try{
+            List<String> urls = PluginUtil.getUrls(getClass().getClassLoader(),false);
+            for (String url : urls) {
+                if (url.startsWith("cn/whiteg/mmocore/commands/userDataCommands/")){
+                    int i = url.indexOf(".class");
+                    if (i == -1) continue;
+                    String path = url.replace('/','.').substring(0,i);
+                    try{
+                        Class<?> clazz = Class.forName(path);
+                        if (CommandInterface.class.isAssignableFrom(clazz)){
+                            String name = clazz.getSimpleName();
+                            CommandInterface ci = (CommandInterface) clazz.newInstance();
+                            map.put(name,ci);
+                        }
+                    }catch (ClassNotFoundException | InstantiationException | IllegalAccessException e){
+                        e.printStackTrace();
+                    }
+                }
             }
+        }catch (IOException e){
+            e.printStackTrace();
         }
-    }
-
-    @Override
-    public boolean onCommand(CommandSender sender,Command cmd,String label,String[] args) {
-        if(args.length == 0){
-            sender.sendMessage("§2[§bMMOCore§2]");
-            return true;
-        }
-        if (CommandMap.containsKey(args[0])){
-            return CommandMap.get(args[0]).onCommand(sender,cmd,label,args);
-        }  else {
-            sender.sendMessage("未知参数");
-        }
-        return true;
-    }
-
-    @Override
-    public List<String> onTabComplete(CommandSender sender,Command cmd,String label,String[] args) {
-        if (args.length > 1){
-            if (CommandMap.get(args[0])!=null) return CommandMap.get(args[0]).onTabComplete(sender,cmd,label,args);
-        }
-        for (int i = 0; i < args.length; i++) {
-            args[i] = args[i].toLowerCase();
-        }
-        if (args.length == 1){
-            return getMatches(args[0],Arrays.asList(AllCmd));
-        }
-        return null;
+        commandMap = new HashMap<>(map);
     }
 
     public static List<String> getMatches(String value,List<String> list) {
@@ -63,7 +55,40 @@ public class UserDataCommand implements CommandExecutor, TabCompleter {
         return result;
     }
 
-    public void regCommand(String var1,CommandInterface cmd) {
-        CommandMap.put(var1,cmd);
+    @Override
+    public boolean onCommand(CommandSender sender,Command cmd,String label,String[] args) {
+        if (args.length == 0){
+            sender.sendMessage("§2[§bMMOCore§2]");
+            return true;
+        }
+        if (commandMap.containsKey(args[0])){
+            return commandMap.get(args[0]).onCommand(sender,cmd,label,args);
+        } else {
+            sender.sendMessage("未知参数");
+        }
+        return true;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender,Command cmd,String label,String[] args) {
+        if (args.length > 1){
+            if (commandMap.get(args[0]) != null) return commandMap.get(args[0]).onTabComplete(sender,cmd,label,args);
+        }
+        for (int i = 0; i < args.length; i++) {
+            args[i] = args[i].toLowerCase();
+        }
+        if (args.length == 1){
+            return getMatches(args[0],getCanUseCommands(sender));
+        }
+        return null;
+    }
+
+    //获取玩家可用指令列表
+    public List<String> getCanUseCommands(CommandSender sender) {
+        List<String> list = new ArrayList<>(commandMap.size());
+        commandMap.forEach((key,ci) -> {
+            if (ci.canUseCommand(sender)) list.add(key);
+        });
+        return list;
     }
 }

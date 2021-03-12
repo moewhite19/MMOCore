@@ -15,10 +15,6 @@ public class maintenance extends CommandInterface implements Listener {
 
     @Override
     public boolean onCommand(CommandSender sender,Command cmd,String label,String[] args) {
-        if (!sender.hasPermission("whiteg.test")){
-            sender.sendMessage("§b权限不足");
-            return true;
-        }
         enable = !enable;
         if (enable) MMOCore.plugin.regListener(this);
         else MMOCore.plugin.unregListener(this);
@@ -35,5 +31,10 @@ public class maintenance extends CommandInterface implements Listener {
     @Override
     public List<String> onTabComplete(CommandSender sender,Command cmd,String label,String[] args) {
         return null;
+    }
+
+    @Override
+    public boolean canUseCommand(CommandSender sender) {
+        return sender.hasPermission("whiteg.test");
     }
 }
