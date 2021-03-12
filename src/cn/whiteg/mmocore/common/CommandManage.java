@@ -75,10 +75,6 @@ public class CommandManage extends CommandInterface {
         }
         CommandInterface subCommand = commandMap.get(args[0]);
         if (subCommand != null){
-            if (!subCommand.canUseCommand(sender)){
-                sender.sendMessage("§b阁下没有权限使用这个指令");
-                return false;
-            }
             if (args.length > 1){
                 String[] subArgs = new String[args.length - 1];
                 System.arraycopy(args,1,subArgs,0,subArgs.length);
@@ -108,7 +104,7 @@ public class CommandManage extends CommandInterface {
             return getMatches(args[0].toLowerCase(),getCanUseCommands(sender));
         } else if (args.length > 1){
             CommandInterface subCommand = commandMap.get(args[0]);
-            if (subCommand != null && subCommand.canUseCommand(sender)){
+            if (subCommand != null){
                 String[] subArgs = new String[args.length - 1];
                 System.arraycopy(args,1,subArgs,0,subArgs.length);
                 return subCommand.onTabComplete(sender,cmd,label,subArgs);

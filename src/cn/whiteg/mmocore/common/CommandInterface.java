@@ -6,15 +6,14 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 public abstract class CommandInterface implements CommandExecutor, TabCompleter {
-    public CommandInterface() {
 
-    }
 
     public static List<String> getMatches(String[] args,List<String> list) {
         return getMatches(args[args.length - 1],list);
@@ -50,6 +49,7 @@ public abstract class CommandInterface implements CommandExecutor, TabCompleter 
         return PlayersList(arg[arg.length - 1]);
     }
 
+    @Override
     public List<String> onTabComplete(CommandSender sender,Command cmd,String label,String[] args) {
         return PlayersList(args);
     }

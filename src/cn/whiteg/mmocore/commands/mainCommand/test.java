@@ -1,13 +1,11 @@
 package cn.whiteg.mmocore.commands.mainCommand;
 
 import cn.whiteg.mmocore.MMOCore;
-import cn.whiteg.mmocore.common.CommandInterface;
+import cn.whiteg.mmocore.common.HasCommandInterface;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
-import java.util.List;
-
-public class test extends CommandInterface {
+public class test extends HasCommandInterface {
 
     final private MMOCore plugin;
 
@@ -16,7 +14,7 @@ public class test extends CommandInterface {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender,Command cmd,String label,String[] args) {
+    public boolean executor(CommandSender sender,Command cmd,String label,String[] args) {
         sender.sendMessage("插件 " + plugin);
         return true;
     }

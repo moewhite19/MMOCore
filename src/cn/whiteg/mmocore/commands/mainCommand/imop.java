@@ -1,7 +1,8 @@
 package cn.whiteg.mmocore.commands.mainCommand;
 
 import cn.whiteg.mmocore.MMOCore;
-import cn.whiteg.mmocore.common.CommandInterface;
+import cn.whiteg.mmocore.common.HasCommandInterface;
+import com.bekvon.bukkit.residence.containers.cmd;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
@@ -12,10 +13,10 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
-public class imop extends CommandInterface {
+public class imop extends HasCommandInterface {
 
     @Override
-    public boolean onCommand(CommandSender sender,Command cmd,String label,String[] args) {
+    public boolean executor(CommandSender sender,Command cmd,String label,String[] args) {
         if (args.length == 1){
             if (args[0].equals("esshomes")){
                 File dir = new File(MMOCore.plugin.getDataFolder(),"Player");
@@ -47,10 +48,5 @@ public class imop extends CommandInterface {
     @Override
     public boolean canUseCommand(CommandSender sender) {
         return sender.hasPermission("whiteg.test");
-    }
-
-    @Override
-    public List<String> onTabComplete(CommandSender sender,Command cmd,String label,String[] args) {
-        return null;
     }
 }

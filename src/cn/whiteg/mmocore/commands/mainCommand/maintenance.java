@@ -1,7 +1,7 @@
 package cn.whiteg.mmocore.commands.mainCommand;
 
 import cn.whiteg.mmocore.MMOCore;
-import cn.whiteg.mmocore.common.CommandInterface;
+import cn.whiteg.mmocore.common.HasCommandInterface;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.EventHandler;
@@ -10,11 +10,11 @@ import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 
 import java.util.List;
 
-public class maintenance extends CommandInterface implements Listener {
+public class maintenance extends HasCommandInterface implements Listener {
     boolean enable = false;
 
     @Override
-    public boolean onCommand(CommandSender sender,Command cmd,String label,String[] args) {
+    public boolean executor(CommandSender sender,Command cmd,String label,String[] args) {
         enable = !enable;
         if (enable) MMOCore.plugin.regListener(this);
         else MMOCore.plugin.unregListener(this);

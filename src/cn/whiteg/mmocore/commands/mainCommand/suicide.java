@@ -1,7 +1,7 @@
 package cn.whiteg.mmocore.commands.mainCommand;
 
 import cn.whiteg.mmocore.api.ReqestManage;
-import cn.whiteg.mmocore.common.CommandInterface;
+import cn.whiteg.mmocore.common.HasCommandInterface;
 import cn.whiteg.mmocore.container.Reqest;
 import cn.whiteg.mmocore.container.ReqestAbs;
 import net.md_5.bungee.api.chat.*;
@@ -11,10 +11,10 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class suicide extends CommandInterface {
+public class suicide extends HasCommandInterface {
 
     @Override
-    public boolean onCommand(CommandSender sender,Command cmd,String label,String[] args) {
+    public boolean executor(CommandSender sender,Command cmd,String label,String[] args) {
         if (sender instanceof Player){
             Player player = (Player) sender;
             final Reqest reqest = new ReqestAbs() {
