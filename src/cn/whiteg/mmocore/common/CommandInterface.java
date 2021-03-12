@@ -6,7 +6,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,7 +37,18 @@ public abstract class CommandInterface implements CommandExecutor, TabCompleter 
         return result;
     }
 
+    @Deprecated
     public static List<String> PlayersList(String arg) {
+        return getPlayersList(arg);
+    }
+
+    @Deprecated
+    public static List<String> PlayersList(String[] arg) {
+        return getPlayersList(arg);
+    }
+
+    //获取玩家列表,根据arg筛选
+    public static List<String> getPlayersList(String arg) {
         Collection<? extends Player> collection = Bukkit.getOnlinePlayers();
         List<String> players = new ArrayList<>(collection.size());
         for (Player p : collection) players.add(p.getName());
@@ -51,7 +61,7 @@ public abstract class CommandInterface implements CommandExecutor, TabCompleter 
 
     @Override
     public List<String> onTabComplete(CommandSender sender,Command cmd,String label,String[] args) {
-        return PlayersList(args);
+        return getPlayersList(args);
     }
 
     //获取指令名称
