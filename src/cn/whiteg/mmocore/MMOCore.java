@@ -35,7 +35,7 @@ public class MMOCore extends PluginBase {
     }
 
     //c 这些是当初跳过Java基础写的Bukkit
-    //  现在回顾都是试代码x，反正恰好能完成他的工作,有空再改吧
+    //  现在回顾都是shi代码x，反正恰好能完成他的工作,有空再改吧
     public static DataCon getPlayerData(Player player) {
         return getPlayerData(((OfflinePlayer) player));
     }
