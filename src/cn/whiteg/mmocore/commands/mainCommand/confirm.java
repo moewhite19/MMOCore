@@ -5,7 +5,6 @@ import cn.whiteg.mmocore.common.CommandInterface;
 import cn.whiteg.mmocore.container.ReqestContainer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +12,7 @@ import java.util.List;
 public class confirm extends CommandInterface {
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender,@NotNull Command cmd,@NotNull String label,String[] args) {
+    public boolean onCommand(CommandSender sender,Command cmd,String label,String[] args) {
         boolean r = false;
         if (args.length == 0){
             r = ReqestManage.accept(sender,sender.getName());

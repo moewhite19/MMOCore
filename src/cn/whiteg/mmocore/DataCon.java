@@ -1,14 +1,13 @@
 package cn.whiteg.mmocore;
 
 import cn.whiteg.mmocore.Event.DataConRenameEvent;
-import com.sun.istack.internal.NotNull;
-import com.sun.istack.internal.Nullable;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.craftbukkit.libs.jline.internal.Nullable;
 import org.bukkit.entity.Player;
 
 import java.io.File;
@@ -43,7 +42,7 @@ public class DataCon {
         }
     }
 
-    public DataCon(@NotNull String name,boolean load,boolean create) {
+    public DataCon(String name,boolean load,boolean create) {
         this.name = name;
         uuid = MMOCore.getUUID(name);
         file = new File(Setting.DataDir,uuid.toString() + ".yml");

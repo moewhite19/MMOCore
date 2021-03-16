@@ -13,7 +13,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -35,6 +34,8 @@ public class MMOCore extends PluginBase {
         plugin = this;
     }
 
+    //c 这些是当初跳过Java基础写的Bukkit
+    //  现在回顾都是试代码x，反正恰好能完成他的工作,有空再改吧
     public static DataCon getPlayerData(Player player) {
         return getPlayerData(((OfflinePlayer) player));
     }
@@ -203,7 +204,7 @@ public class MMOCore extends PluginBase {
         mainCommand.setExecutor();
 
         //旧的指令注册方式，懒得改了x
-        @Nullable PluginCommand pc = getCommand("userdata");
+        PluginCommand pc = getCommand("userdata");
         if (pc != null){
             userDataCommand = new UserDataCommand();
             pc.setExecutor(userDataCommand);

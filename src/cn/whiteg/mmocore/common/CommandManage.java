@@ -5,7 +5,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -144,7 +143,7 @@ public class CommandManage extends CommandInterface {
 
     //设置指令执行器
     public void setExecutor(String name) {
-        @Nullable PluginCommand pc = plugin.getCommand(name);
+        PluginCommand pc = plugin.getCommand(name);
         if (pc != null){
             pc.setExecutor(this);
             pc.setTabCompleter(this);

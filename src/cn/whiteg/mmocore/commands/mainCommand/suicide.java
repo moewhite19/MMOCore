@@ -53,6 +53,7 @@ public class suicide extends HasCommandInterface {
         return false;
     }
 
+
     @Override
     public List<String> onTabComplete(CommandSender sender,Command cmd,String label,String[] args) {
         return null;
