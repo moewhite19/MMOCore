@@ -3,6 +3,7 @@ package cn.whiteg.mmocore.sound;
 import org.bukkit.Location;
 import org.bukkit.SoundCategory;
 import org.bukkit.World;
+import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
@@ -64,7 +65,7 @@ public class SingleSound implements Sound {
         @Nullable World world = location.getWorld();
         if (world != null) world.playSound(location,sound,SoundCategory.PLAYERS,volume,pitch);
     }
-    
+
     //播放给玩家
     public void playTo(Player player) {
         playTo(player,player.getLocation());

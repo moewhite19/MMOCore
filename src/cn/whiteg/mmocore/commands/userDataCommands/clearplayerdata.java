@@ -28,7 +28,7 @@ public class clearplayerdata extends CommandInterface {
     public List<String> onTabComplete(CommandSender sender,Command cmd,String label,String[] args) {
         if (sender.hasPermission("whiteg.test")){
             if (args.length == 2){
-                return getMatches(Collections.singletonList("30"),args);
+                return Collections.singletonList("30");
             }
         }
         return null;

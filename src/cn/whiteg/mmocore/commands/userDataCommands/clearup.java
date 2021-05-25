@@ -19,7 +19,7 @@ public class clearup extends CommandInterface {
         if (args.length == 2){
             int day;
             try{
-                day = Integer.valueOf(args[1]);
+                day = Integer.parseInt(args[1]);
             }catch (NumberFormatException e){
                 sender.sendMessage("参数有误");
                 return false;

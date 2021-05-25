@@ -15,11 +15,11 @@ import java.util.*;
 public class SoundPlayer implements Sound, Runnable {
     final List<Sound> track;
     private final Plugin plugin;
-    private final int tick;
+    private final int tick; //播放间隔
     Set<Location> locations = new HashSet<>(); //正在播放的位置
     Map<Player, Location> players = new HashMap<>(); //播放的玩家列表，如果值为Null则实时获取玩家位置
-    private int loop;
-    private int progress = 0;
+    private int loop; //循环播放次数 如果为-1则无限循环
+    private int progress = 0; //当前播放进度
     private BukkitTask task = null;
 
     public SoundPlayer(Plugin plugin,List<Sound> track,int loop,int tick) {

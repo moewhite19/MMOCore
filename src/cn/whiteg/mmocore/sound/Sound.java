@@ -26,7 +26,7 @@ public interface Sound {
         } else if (object instanceof List){
             return CompoundSound.load((List<?>) object);
         } else if (object instanceof ConfigurationSection){
-            return SoundPlayer.load(MMOCore.plugin,(ConfigurationSection) object);
+            return SoundPlayer.load((ConfigurationSection) object);
         }
         return EMPTY;
     }

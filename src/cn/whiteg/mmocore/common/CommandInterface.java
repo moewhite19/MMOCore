@@ -28,10 +28,9 @@ public abstract class CommandInterface implements CommandExecutor, TabCompleter 
 
     public static List<String> getMatches(String value,List<String> list) {
         List<String> result = new ArrayList<>(list.size());
-        for (int i = 0; i < list.size(); i++) {
-            String str = list.get(i).intern().toLowerCase();
-            if (str.startsWith(value.toLowerCase())){
-                result.add(list.get(i));
+        for (String enter : list) {
+            if (enter.intern().toLowerCase().startsWith(value.toLowerCase())){
+                result.add(enter);
             }
         }
         return result;
@@ -55,8 +54,16 @@ public abstract class CommandInterface implements CommandExecutor, TabCompleter 
         return getMatches(arg,players);
     }
 
-    public static List<String> PlayersList(String[] arg) {
-        return PlayersList(arg[arg.length - 1]);
+    //获取玩家列表,根据args筛选
+    public static List<String> getPlayersList(String[] args) {
+        return getPlayersList(args[args.length - 1]);
+    }
+
+    //获取玩家列表，根据args筛选，排除自己
+    public static List<String> getPlayersList(String[] args,CommandSender sender) {
+        List<String> list = getPlayersList(args);
+        list.remove(sender.getName());
+        return list;
     }
 
     @Override
@@ -66,7 +73,7 @@ public abstract class CommandInterface implements CommandExecutor, TabCompleter 
 
     //获取指令名称
     public String getName() {
-        return getClass().getSimpleName();
+        return getClass().getSimpleName().toLowerCase();
     }
 
     //获取指令介绍

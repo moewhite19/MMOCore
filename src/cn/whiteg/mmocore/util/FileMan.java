@@ -329,6 +329,10 @@ public class FileMan {
             sender.sendMessage("无效名称");
             return;
         }
+        if (name.equals(newName)){
+            sender.sendMessage("你想原地起飞吗?");
+            return;
+        }
         if (dc == null){
             sender.sendMessage("找不到玩家");
             return;
