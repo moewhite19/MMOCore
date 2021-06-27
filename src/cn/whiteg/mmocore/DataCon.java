@@ -1,6 +1,7 @@
 package cn.whiteg.mmocore;
 
-import cn.whiteg.mmocore.Event.DataConRenameEvent;
+import cn.whiteg.mmocore.event.DataConCreateEvent;
+import cn.whiteg.mmocore.event.DataConRenameEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -90,8 +91,10 @@ public class DataCon {
                 change = true;
                 save();
                 loaded = true;
+                var event = new DataConCreateEvent(this);
+                event.call();
                 return true;
-            }catch (IOException e){
+            }catch (Exception e){
                 e.printStackTrace();
             }
         }

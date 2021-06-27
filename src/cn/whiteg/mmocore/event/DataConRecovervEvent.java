@@ -1,18 +1,16 @@
-package cn.whiteg.mmocore.Event;
+package cn.whiteg.mmocore.event;
 
 import cn.whiteg.mmocore.DataCon;
 import cn.whiteg.mmocore.MMOCore;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.Cancellable;
-import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class DataConRecovervEvent extends Event implements Cancellable {
-    private static HandlerList handler = new HandlerList();
+public class DataConRecovervEvent extends CallEvent implements Cancellable {
+    private static final HandlerList handler = new HandlerList();
     private final CommandSender sender;
     private final String name;
-    private boolean cancelled = false;
     private DataCon dc = null;
 
     public DataConRecovervEvent(CommandSender sender,String name) {
@@ -28,25 +26,6 @@ public class DataConRecovervEvent extends Event implements Cancellable {
     @Override
     public HandlerList getHandlers() {
         return handler;
-    }
-
-    public void call() {
-        if (Bukkit.isPrimaryThread()){
-            Bukkit.getPluginManager().callEvent(this);
-        } else {
-            Bukkit.getScheduler().runTask(MMOCore.plugin,() -> {
-                Bukkit.getPluginManager().callEvent(this);
-            });
-        }
-    }
-    @Override
-    public boolean isCancelled() {
-        return cancelled;
-    }
-
-    @Override
-    public void setCancelled(boolean b) {
-        cancelled = b;
     }
 
     public CommandSender getSender() {

@@ -3,7 +3,6 @@ package cn.whiteg.mmocore.sound;
 import org.bukkit.Location;
 import org.bukkit.SoundCategory;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
@@ -91,7 +90,7 @@ public class SingleSound implements Sound {
         if (world == null) return;
         if (volume > 16) entitys = world.getEntities();
         else {
-            double r = volume * 16;
+            double r = volume * 32;
             entitys = world.getNearbyEntities(location,r,r,r);
         }
         for (Entity entity : entitys) {

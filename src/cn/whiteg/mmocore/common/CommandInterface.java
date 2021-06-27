@@ -15,10 +15,12 @@ public abstract class CommandInterface implements CommandExecutor, TabCompleter 
 
 
     public static List<String> getMatches(String[] args,List<String> list) {
+        if (args.length == 0) return list;
         return getMatches(args[args.length - 1],list);
     }
 
     public static List<String> getMatches(List<String> list,String[] args) {
+        if (args.length == 0) return list;
         return getMatches(args[args.length - 1],list);
     }
 
@@ -27,6 +29,7 @@ public abstract class CommandInterface implements CommandExecutor, TabCompleter 
     }
 
     public static List<String> getMatches(String value,List<String> list) {
+        if (value == null || value.isEmpty()) return list;
         List<String> result = new ArrayList<>(list.size());
         for (String enter : list) {
             if (enter.intern().toLowerCase().startsWith(value.toLowerCase())){
@@ -37,26 +40,21 @@ public abstract class CommandInterface implements CommandExecutor, TabCompleter 
     }
 
     @Deprecated
-    public static List<String> PlayersList(String arg) {
-        return getPlayersList(arg);
-    }
-
-    @Deprecated
     public static List<String> PlayersList(String[] arg) {
         return getPlayersList(arg);
     }
 
     //获取玩家列表,根据arg筛选
-    public static List<String> getPlayersList(String arg) {
+    public static List<String> getPlayersList() {
         Collection<? extends Player> collection = Bukkit.getOnlinePlayers();
         List<String> players = new ArrayList<>(collection.size());
         for (Player p : collection) players.add(p.getName());
-        return getMatches(arg,players);
+        return players;
     }
 
     //获取玩家列表,根据args筛选
     public static List<String> getPlayersList(String[] args) {
-        return getPlayersList(args[args.length - 1]);
+        return getMatches(getPlayersList(),args);
     }
 
     //获取玩家列表，根据args筛选，排除自己

@@ -1,20 +1,18 @@
-package cn.whiteg.mmocore.Event;
+package cn.whiteg.mmocore.event;
 
 import cn.whiteg.mmocore.DataCon;
 import cn.whiteg.mmocore.MMOCore;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.Cancellable;
-import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class DataConRenameEvent extends Event implements Cancellable {
-    private static HandlerList handler = new HandlerList();
+public class DataConRenameEvent extends CallEvent implements Cancellable {
+    private static final HandlerList handler = new HandlerList();
     final private DataCon dataCon;
     private final String name;
     final private String newId;
     private final CommandSender sender;
-    private boolean cancelled = false;
 
     public DataConRenameEvent(DataCon dataCon,String name,String newId,CommandSender sender) {
         this.dataCon = dataCon;
@@ -47,25 +45,4 @@ public class DataConRenameEvent extends Event implements Cancellable {
     public HandlerList getHandlers() {
         return handler;
     }
-
-    public void call() {
-        if (Bukkit.isPrimaryThread()){
-            Bukkit.getPluginManager().callEvent(this);
-        } else {
-            Bukkit.getScheduler().runTask(MMOCore.plugin,() -> {
-                Bukkit.getPluginManager().callEvent(this);
-            });
-        }
-    }
-
-    @Override
-    public boolean isCancelled() {
-        return cancelled;
-    }
-
-    @Override
-    public void setCancelled(boolean b) {
-        cancelled = b;
-    }
-
 }

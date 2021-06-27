@@ -1,30 +1,22 @@
-package cn.whiteg.mmocore.Event;
+package cn.whiteg.mmocore.event;
 
-import cn.whiteg.mmocore.DataCon;
 import cn.whiteg.mmocore.MMOCore;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.event.Cancellable;
-import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class DataConDeleteEvent extends Event implements Cancellable {
-    private static HandlerList handler = new HandlerList();
-    final private DataCon dataCon;
+public class DataConClearRecovervEvent extends CallEvent {
+    private static final HandlerList handler = new HandlerList();
     private final CommandSender sender;
-    private boolean cancelled = false;
+    private final String name;
 
-    public DataConDeleteEvent(DataCon dataCon,CommandSender sender) {
-        this.dataCon = dataCon;
+    public DataConClearRecovervEvent(CommandSender sender,String name) {
         this.sender = sender;
+        this.name = name;
     }
 
     public static HandlerList getHandlerList() {
         return handler;
-    }
-
-    public DataCon getDataCon() {
-        return dataCon;
     }
 
     @Override
@@ -41,17 +33,12 @@ public class DataConDeleteEvent extends Event implements Cancellable {
             });
         }
     }
-    @Override
-    public boolean isCancelled() {
-        return cancelled;
-    }
-
-    @Override
-    public void setCancelled(boolean b) {
-        cancelled = b;
-    }
 
     public CommandSender getSender() {
         return sender;
+    }
+
+    public String getName() {
+        return name;
     }
 }
