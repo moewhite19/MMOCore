@@ -98,7 +98,7 @@ public class FieldAccessor<T> {
     private final long offset;
     private final Class<?> base;
     private final Class<T> type;
-    private final GetAndSetter<T> getter;
+    private final GetAndSetter<T> getAndSetter;
 
     @SuppressWarnings("unchecked")
     public FieldAccessor(Field field) {
@@ -110,7 +110,7 @@ public class FieldAccessor<T> {
             base = null;
         }
         type = (Class<T>) field.getType();
-        getter = (GetAndSetter<T>) getterMap.get(type);
+        getAndSetter = (GetAndSetter<T>) getterMap.get(type);
     }
 
     public FieldAccessor(Class<?> declaring,long offset,Class<T> type) {
@@ -118,25 +118,25 @@ public class FieldAccessor<T> {
         this.base = declaring;
         this.type = type;
         //noinspection unchecked
-        getter = (GetAndSetter<T>) getterMap.get(type);
+        getAndSetter = (GetAndSetter<T>) getterMap.get(type);
     }
 
     public void set(Object o,T value) {
-        if (getter == null) UNSAFE.getAndSetObject(getDeclaringClass(o),offset,value);
+        if (getAndSetter == null) UNSAFE.getAndSetObject(getDeclaringClass(o),offset,value);
         else {
-            getter.set(this,o,value);
+            getAndSetter.set(this,o,value);
         }
     }
 
     public T getAndSet(Object o,T value) {
-        if (getter != null) throw new ClassCastException("当前Field类型无法转换成Object");
+        if (getAndSetter != null) throw new ClassCastException("当前Field类型无法转换成Object");
         //noinspection unchecked
         return (T) UNSAFE.getAndSetObject(o,offset,value);
     }
 
     @SuppressWarnings("unchecked")
     public T get(Object o) {
-        return (T) (getter == null ? UNSAFE.getObject(getDeclaringClass(o),offset) : getter.get(this,o));
+        return (T) (getAndSetter == null ? UNSAFE.getObject(getDeclaringClass(o),offset) : getAndSetter.get(this,o));
     }
 
     public int getInt(Object o) {

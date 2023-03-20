@@ -10,7 +10,6 @@ import cn.whiteg.mmocore.util.FileMan;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 
 import java.io.File;
@@ -33,8 +32,9 @@ public class MMOCore extends PluginBase {
         plugin = this;
     }
 
-    //c 这些是当初跳过Java基础写的Bukkit
+    //  这些是当初跳过Java基础写的Bukkit
     //  现在回顾都是shi代码x，反正恰好能完成他的工作,有空再改吧
+    //      实现都改的差不多了，但是框架不好改x
     public static DataCon getPlayerData(Player player) {
         return getPlayerData(((OfflinePlayer) player));
     }
@@ -96,6 +96,7 @@ public class MMOCore extends PluginBase {
         if (sender instanceof OfflinePlayer) return getPlayerData(((OfflinePlayer) sender));
         return getPlayerData(sender.getName());
     }
+
 
     public static boolean hasPlayerData(String name) {
         return hasPlayerData(getUUID(name));

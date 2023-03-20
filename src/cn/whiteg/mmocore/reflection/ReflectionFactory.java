@@ -2,6 +2,7 @@ package cn.whiteg.mmocore.reflection;
 
 import sun.misc.Unsafe;
 
+import java.lang.reflect.Field;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
@@ -29,6 +30,10 @@ public class ReflectionFactory {
             e.printStackTrace();
         }
 
+    }
+
+    public static <T> FieldAccessor<T> createFieldAccessor(Field field){
+        return new FieldAccessor<>(field);
     }
 
     //构建一个对象但不调用构建方法
