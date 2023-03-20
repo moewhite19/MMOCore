@@ -32,7 +32,7 @@ public class ReflectionFactory {
 
     }
 
-    public static <T> FieldAccessor<T> createFieldAccessor(Field field){
+    public static  FieldAccessor<?> createFieldAccessor(Field field){
         return new FieldAccessor<>(field);
     }
 

@@ -1,5 +1,6 @@
 package cn.whiteg.mmocore.util;
 
+import cn.whiteg.mmocore.reflection.MethodInvoker;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.server.level.WorldServer;
 import net.minecraft.world.entity.Entity;
@@ -11,6 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 
@@ -43,6 +45,7 @@ public class NMSUtils {
         }
 
     }
+
     //根据类型获取Field
     public static Field getFieldFormType(Class<?> clazz,Class<?> type) throws NoSuchFieldException {
         for (Field declaredField : clazz.getDeclaredFields()) {
@@ -89,7 +92,7 @@ public class NMSUtils {
     public static <T extends Entity> EntityTypes<T> getEntityType(Class<? extends Entity> clazz) {
         String name = EntityTypes.class.getName().concat("<").concat(clazz.getName()).concat(">");
         for (Field field : EntityTypes.class.getFields()) {
-            if(!Modifier.isStatic(field.getModifiers())) continue; //跳过非静态Field
+            if (!Modifier.isStatic(field.getModifiers())) continue; //跳过非静态Field
             try{
                 if (field.getAnnotatedType().getType().getTypeName().equals(name))
                     //noinspection unchecked
@@ -105,7 +108,7 @@ public class NMSUtils {
     public static <T extends TileEntity> TileEntityTypes<T> getTileEntityType(Class<? extends TileEntity> clazz) {
         String name = TileEntityTypes.class.getName().concat("<").concat(clazz.getName()).concat(">");
         for (Field field : TileEntityTypes.class.getFields()) {
-            if(!Modifier.isStatic(field.getModifiers())) continue; //跳过非静态Field
+            if (!Modifier.isStatic(field.getModifiers())) continue; //跳过非静态Field
             try{
                 if (field.getAnnotatedType().getType().getTypeName().equals(name))
                     //noinspection unchecked
@@ -117,22 +120,50 @@ public class NMSUtils {
         return null;
     }
 
+    /**
+     * Search for the first publicly and privately defined method of the given name and parameter count.
+     *
+     * @param clazz      - a class to start with.
+     * @param methodName - the method name, or NULL to skip.
+     * @param returnType - the expected return type, or NULL to ignore.
+     * @param params     - the expected parameters.
+     * @return An object that invokes this specific method.
+     * @throws IllegalStateException If we cannot find this method.
+     */
+    public static <RT> MethodInvoker<RT> getTypedMethod(Class<?> clazz,String methodName,Class<RT> returnType,Class<?>... params) {
+        for (final Method method : clazz.getDeclaredMethods()) {
+            if ((methodName == null || method.getName().equals(methodName))
+                    && (returnType == null || method.getReturnType().equals(returnType))
+                    && (Arrays.equals(method.getParameterTypes(),params))){
+                method.setAccessible(true);
 
-    public static Entity getNmsEntity(org.bukkit.entity.Entity entity){
+                return new MethodInvoker<>(method);
+            }
+        }
+
+        // Search in every superclass
+        if (clazz.getSuperclass() != null)
+            return (MethodInvoker<RT>) getTypedMethod(clazz.getSuperclass(),methodName,returnType,params);
+        throw new IllegalStateException(String.format("Unable to find method %s %s (%s).",returnType,methodName,Arrays.asList(params)));
+    }
+
+    public static Entity getNmsEntity(org.bukkit.entity.Entity entity) {
         try{
             return (Entity) craftEntity.get(entity);
         }catch (IllegalAccessException e){
             throw new RuntimeException(e);
         }
     }
-    public static WorldServer getNmsWorld(World world){
+
+    public static WorldServer getNmsWorld(World world) {
         try{
             return (WorldServer) craftWorld.get(world);
         }catch (IllegalAccessException e){
             throw new RuntimeException(e);
         }
     }
-    public static DedicatedServer getNmsServer(){
+
+    public static DedicatedServer getNmsServer() {
         try{
             return (DedicatedServer) craftServer.get(Bukkit.getServer());
         }catch (IllegalAccessException e){

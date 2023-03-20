@@ -5,6 +5,7 @@ import cn.whiteg.mmocore.reflection.FieldAccessor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginLoader;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
@@ -20,7 +21,7 @@ import java.util.jar.JarInputStream;
 public class PluginUtil {
 
     private static final Class<?> pluginLoadderClass;
-    private static final FieldAccessor<?> pluginField;
+    private static final FieldAccessor<JavaPlugin> pluginField;
 
     static {
         try{
@@ -112,7 +113,7 @@ public class PluginUtil {
 //                }
         final ClassLoader loader = clazz.getClassLoader();
         if(pluginLoadderClass.isInstance(loader)){
-            return (JavaPlugin) pluginField.get(loader);
+            return pluginField.get(loader);
         }
         return null;
     }
