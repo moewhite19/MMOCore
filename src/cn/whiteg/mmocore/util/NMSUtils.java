@@ -1,6 +1,5 @@
 package cn.whiteg.mmocore.util;
 
-import cn.whiteg.mmocore.reflection.MethodInvoker;
 import cn.whiteg.mmocore.reflection.ReflectUtil;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.server.level.WorldServer;
@@ -13,7 +12,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 
@@ -48,7 +46,7 @@ public class NMSUtils {
     }
 
     //根据类型获取Field
-    @Deprecated(since = "不应该在这里的方法，已移动到ReflectUtil内")
+    @Deprecated(since = "不应该在这里的方法，已移动到ReflectUtil内",forRemoval = true)
     public static Field getFieldFormType(Class<?> clazz,Class<?> type) throws NoSuchFieldException {
         for (Field declaredField : clazz.getDeclaredFields()) {
             if (declaredField.getType().equals(type)) return declaredField;
@@ -61,7 +59,7 @@ public class NMSUtils {
     }
 
     //根据类型获取Field(针对泛型)
-    @Deprecated(since = "不应该在这里的方法，已移动到ReflectUtil内")
+    @Deprecated(since = "不应该在这里的方法，已移动到ReflectUtil内",forRemoval = true)
     public static Field getFieldFormType(Class<?> clazz,String type) throws NoSuchFieldException {
         for (Field declaredField : clazz.getDeclaredFields()) {
             if (declaredField.getAnnotatedType().getType().getTypeName().equals(type)) return declaredField;
@@ -73,7 +71,7 @@ public class NMSUtils {
     }
 
     //从数组结构中查找Field
-    @Deprecated(since = "不应该在这里的方法，已移动到ReflectUtil内")
+    @Deprecated(since = "不应该在这里的方法，已移动到ReflectUtil内",forRemoval = true)
     public static Field[] getFieldFormStructure(Class<?> clazz,Class<?>... types) throws NoSuchFieldException {
         var fields = clazz.getDeclaredFields();
         Field[] result = new Field[types.length];
