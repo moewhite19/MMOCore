@@ -3,7 +3,7 @@ main: cn.whiteg.mmocore.MMOCore
 version: 'build.220506'
 api-version: 1.13
 author: MoeWhite
-softdepend: [ ]
+softdepend: [Vault]
 commands:
   mmocore:
     description: The is MMOCore
