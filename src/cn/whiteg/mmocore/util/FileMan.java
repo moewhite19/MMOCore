@@ -572,6 +572,7 @@ public class FileMan {
             if (!Bukkit.isPrimaryThread()){
                 Bukkit.getScheduler().runTask(MMOCore.plugin,() -> execute(runnable,dataCon,sender));
                 sender.sendMessage("切换到主线程执行");
+                return;
             }
             var p = dataCon.getPlayer();
             if (p != null && p.isOnline()){
