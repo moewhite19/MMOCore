@@ -71,6 +71,8 @@ public abstract class CommandInterface implements CommandExecutor, TabCompleter 
         return getPlayersList(args);
     }
 
+    public abstract boolean onCommand(CommandSender sender,Command command,String label,String[] args);
+
     //获取指令名称
     public String getName() {
         return getClass().getSimpleName().toLowerCase();
