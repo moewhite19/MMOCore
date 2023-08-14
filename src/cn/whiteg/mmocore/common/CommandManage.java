@@ -17,26 +17,33 @@ import java.util.Map;
 public class CommandManage extends CommandInterface {
     public Map<String, CommandInterface> commandMap = new HashMap<>();
     JavaPlugin plugin;
-    String path;
 
     public CommandManage(JavaPlugin plugin) {
+        this(plugin,true);
+    }
+
+    public CommandManage(JavaPlugin plugin,boolean resizeMap) {
         this.plugin = plugin;
-        path = plugin.getClass().getPackage().getName().replace('.','/') + "/commands";
-        init();
+        String path = plugin.getClass().getPackage().getName().replace('.','/') + "/commands";
+        init(path,resizeMap);
+    }
+
+    public CommandManage(JavaPlugin plugin,String pack,boolean resizeMap) {
+        this.plugin = plugin;
+        pack = pack == null ? null : pack.replace('.','/');
+        if (pack != null) init(pack,resizeMap);
     }
 
     public CommandManage(JavaPlugin plugin,String pack) {
-        this.plugin = plugin;
-        this.path = pack.replace('.','/');
-        init();
+        this(plugin,pack,true);
     }
 
     //初始化
-    private void init() {
+    private void init(String pack,boolean resizeMap) {
         try{
             List<String> urls = PluginUtil.getUrls(plugin.getClass().getClassLoader(),false);
             for (String url : urls) {
-                if (url.startsWith(path) && url.endsWith(".class")){
+                if (url.startsWith(pack) && url.endsWith(".class")){
                     String path = url.substring(0,url.length() - 6).replace('/','.');
                     try{
                         Class<?> clazz = plugin.getClass().getClassLoader().loadClass(path);
@@ -53,7 +60,8 @@ public class CommandManage extends CommandInterface {
                             if (ci == null) ci = (CommandInterface) clazz.newInstance();
                             registerCommand(ci);
                         }
-                    }catch (ClassNotFoundException | InvocationTargetException | InstantiationException | IllegalAccessException e){
+                    }catch (ClassNotFoundException | InvocationTargetException | InstantiationException |
+                            IllegalAccessException e){
                         plugin.getLogger().warning("无法构建指令: " + path);
                         e.printStackTrace();
                     }
@@ -62,7 +70,7 @@ public class CommandManage extends CommandInterface {
         }catch (IOException e){
             e.printStackTrace();
         }
-        resizeMap();
+        if (resizeMap) resizeMap();
     }
 
     @Override
