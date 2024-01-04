@@ -17,8 +17,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.logging.Logger;
 
-import static cn.whiteg.mmocore.Setting.reload;
-
 
 public class MMOCore extends PluginBase {
     public static Logger logger;
@@ -188,7 +186,7 @@ public class MMOCore extends PluginBase {
 
     public void onReload() {
         logger.info("--开始重载--");
-        reload();
+        Setting.reload();
         logger.info("--重载完成--");
     }
 
@@ -197,7 +195,7 @@ public class MMOCore extends PluginBase {
         plugin = this;
         logger = getLogger();
         logger.info("开始加载插件");
-        reload();
+        Setting.reload();
         if (Setting.DEBUG) logger.info("§a调试模式已开启");
 
         mainCommand = new CommandManage(this,"cn/whiteg/mmocore/commands/mainCommand/");
