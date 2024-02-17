@@ -1,6 +1,7 @@
 package cn.whiteg.mmocore.util;
 
 import cn.whiteg.mmocore.DataCon;
+import cn.whiteg.mmocore.MMOCore;
 import org.bukkit.Bukkit;
 
 import java.io.File;
@@ -37,13 +38,15 @@ public class DataIterator implements Iterator<DataCon> {
      */
     @Override
     public DataCon next() {
-        getData();
+        data = new DataCon(files[i]);
+        final DataCon cacheData = MMOCore.getPlayerDataMap().get(data.getUUID());
+        if (cacheData != null) data = cacheData;
         i++;
         return data;
     }
 
     public DataCon getData() {
-        return data = new DataCon(files[i]);
+        return data;
     }
 
     @Override
