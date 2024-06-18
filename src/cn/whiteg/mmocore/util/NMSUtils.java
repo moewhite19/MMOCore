@@ -54,7 +54,7 @@ public class NMSUtils {
 
         //如果有父类 检查父类
         var superClass = clazz.getSuperclass();
-        if (superClass != null) return ReflectUtil.getFieldFormType(superClass,type);
+        if (superClass != null && superClass != Object.class) return ReflectUtil.getFieldFormType(superClass,type);
         throw new NoSuchFieldException(type.getName());
     }
 
@@ -66,7 +66,7 @@ public class NMSUtils {
         }
         //如果有父类 检查父类
         var superClass = clazz.getSuperclass();
-        if (superClass != null) return ReflectUtil.getFieldFormType(superClass,type);
+        if (superClass != null && superClass != Object.class) return ReflectUtil.getFieldFormType(superClass,type);
         throw new NoSuchFieldException(type);
     }
 
