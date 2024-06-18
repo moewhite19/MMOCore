@@ -8,7 +8,7 @@ import java.security.PrivilegedAction;
 
 public class ReflectionFactory {
     public static final Unsafe UNSAFE;
-//    public static Object INTERNAL_UNSAFE;
+    public static Object INTERNAL_UNSAFE;
 
 
     static {
@@ -22,20 +22,17 @@ public class ReflectionFactory {
                 return null;
             }
         });
-//todo 还不知道有什么用
-//        try{
-//            var fa = new FieldAccessor<Object>(Unsafe.class.getDeclaredField("theInternalUnsafe"));
-//            INTERNAL_UNSAFE = fa.get(null);
-//        }catch (NoSuchFieldException e){
-//            e.printStackTrace();
-//        }
+
+        try{
+            var fa = new FieldAccessor<Object>(Unsafe.class.getDeclaredField("theInternalUnsafe"));
+            INTERNAL_UNSAFE = fa.get(null);
+        }catch (NoSuchFieldException e){
+            e.printStackTrace();
+        }
 
     }
-    public static<T> FieldAccessor<T> createFieldAccessor(Field field, Class<T> type){
-        return new FieldAccessor<>(field);
-    }
 
-    public static<T> FieldAccessor<T> createFieldAccessor(Field field){
+    public static  FieldAccessor<?> createFieldAccessor(Field field){
         return new FieldAccessor<>(field);
     }
 
