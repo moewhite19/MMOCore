@@ -8,11 +8,11 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import org.apache.http.util.EntityUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.craftbukkit.entity.CraftEntity;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -21,27 +21,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class NMSUtils {
-    private static Field craftEntity;
-
-    private static String craftRoot;
-
     static Map<Class<? extends Entity>, EntityType<?>> entityClassTypeMap = new HashMap<>();
     static Map<Class<? extends BlockEntity>, BlockEntityType<?>> tileClassEntityMap = new HashMap<>();
     static Map<EntityType<?>, Class<? extends Entity>> entityTypeClassMap = new HashMap<>();
-
-    static {
-
-        try{
-            craftRoot = Bukkit.getServer().getClass().getPackage().getName();
-            //从Bukkit实体获取Nms实体
-            var clazz = EntityUtils.class.getClassLoader().loadClass(craftRoot + ".entity.CraftEntity");
-            craftEntity = ReflectUtil.getFieldFormType(clazz,Entity.class);
-            craftEntity.setAccessible(true);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
-    }
 
     //根据类型获取Field
     @Deprecated(since = "不应该在这里的方法，已移动到ReflectUtil内", forRemoval = true)
@@ -155,11 +137,7 @@ public class NMSUtils {
     }
 
     public static Entity getNmsEntity(org.bukkit.entity.Entity entity) {
-        try{
-            return (Entity) craftEntity.get(entity);
-        }catch (IllegalAccessException e){
-            throw new RuntimeException(e);
-        }
+        return ((CraftEntity) entity).getHandle();
     }
 
     public static ServerLevel getNmsWorld(World world) {
