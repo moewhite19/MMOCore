@@ -94,7 +94,7 @@ public class CommandManage extends CommandInterface {
     }
 
     public boolean onMain(CommandSender sender) {
-        sender.sendMessage("§3[§b" + plugin.getDescription().getFullName() + "§3]");
+        sender.sendMessage("§3[§b" + plugin.getDescription().getFullName() + "§3] §bCommands:");
         for (Map.Entry<String, CommandInterface> entry : commandMap.entrySet()) {
             CommandInterface ci = entry.getValue();
             if (ci.canUseCommand(sender)) sender.sendMessage("§a" + ci.getName() + "§f:§b " + ci.getDescription());
