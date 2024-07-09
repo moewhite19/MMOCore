@@ -11,10 +11,12 @@ public class PluginBase extends JavaPlugin {
     private final List<Listener> listenerList = new LinkedList<>();
 
     public void regListener(Listener listener) {
+        if (listenerList.contains(listener)) return;
         listenerList.add(listener);
         Bukkit.getPluginManager().registerEvents(listener,this);
     }
 
+    @Deprecated
     public void regListener(String key,Listener listener) {
         getLogger().info("注册事件:" + key);
         Bukkit.getPluginManager().registerEvents(listener,this);
