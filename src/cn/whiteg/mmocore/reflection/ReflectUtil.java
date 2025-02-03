@@ -126,7 +126,7 @@ public class ReflectUtil {
     }
 
 
-    public static String markGenericTypes(Class<?> clazz,String... types) {
+    public static String makeGenericTypes(Class<?> clazz,String... types) {
         if (types.length <= 0) return clazz.getName();
         StringBuilder builder = new StringBuilder(clazz.getName()).append('<');
         if (types.length > 1){
@@ -139,7 +139,7 @@ public class ReflectUtil {
     }
 
 
-    public static String markGenericTypes(Class<?> clazz,Class<?>... types) {
+    public static String makeGenericTypes(Class<?> clazz,Class<?>... types) {
         if (types.length <= 0) return clazz.getName();
         StringBuilder builder = new StringBuilder(clazz.getName()).append('<');
         if (types.length > 1){
@@ -155,7 +155,7 @@ public class ReflectUtil {
         return builder.toString();
     }
 
-    public static String markGenericTypes(Class<?> clazz) {
+    public static String makeGenericTypes(Class<?> clazz) {
         return clazz.getName();
     }
 

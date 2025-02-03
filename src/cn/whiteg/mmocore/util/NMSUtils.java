@@ -28,46 +28,19 @@ public class NMSUtils {
     //根据类型获取Field
     @Deprecated(since = "不应该在这里的方法，已移动到ReflectUtil内", forRemoval = true)
     public static Field getFieldFormType(Class<?> clazz,Class<?> type) throws NoSuchFieldException {
-        for (Field declaredField : clazz.getDeclaredFields()) {
-            if (declaredField.getType().equals(type)) return declaredField;
-        }
-
-        //如果有父类 检查父类
-        var superClass = clazz.getSuperclass();
-        if (superClass != null && superClass != Object.class) return ReflectUtil.getFieldFormType(superClass,type);
-        throw new NoSuchFieldException(type.getName());
+        return ReflectUtil.getFieldFormType(clazz,type);
     }
 
     //根据类型获取Field(针对泛型)
     @Deprecated(since = "不应该在这里的方法，已移动到ReflectUtil内", forRemoval = true)
     public static Field getFieldFormType(Class<?> clazz,String type) throws NoSuchFieldException {
-        for (Field declaredField : clazz.getDeclaredFields()) {
-            if (declaredField.getAnnotatedType().getType().getTypeName().equals(type)) return declaredField;
-        }
-        //如果有父类 检查父类
-        var superClass = clazz.getSuperclass();
-        if (superClass != null && superClass != Object.class) return ReflectUtil.getFieldFormType(superClass,type);
-        throw new NoSuchFieldException(type);
+        return ReflectUtil.getFieldFormType(clazz,type);
     }
 
     //从数组结构中查找Field
     @Deprecated(since = "不应该在这里的方法，已移动到ReflectUtil内", forRemoval = true)
     public static Field[] getFieldFormStructure(Class<?> clazz,Class<?>... types) throws NoSuchFieldException {
-        var fields = clazz.getDeclaredFields();
-        Field[] result = new Field[types.length];
-        int index = 0;
-        for (Field f : fields) {
-            if (f.getType() == types[index]){
-                result[index] = f;
-                index++;
-                if (index >= types.length){
-                    return result;
-                }
-            } else {
-                index = 0;
-            }
-        }
-        throw new NoSuchFieldException(Arrays.toString(types));
+        return ReflectUtil.getFieldFormStructure(clazz,types);
     }
 
     /**
@@ -147,4 +120,6 @@ public class NMSUtils {
     public static DedicatedServer getNmsServer() {
         return ((CraftServer) Bukkit.getServer()).getServer();
     }
+
+
 }
