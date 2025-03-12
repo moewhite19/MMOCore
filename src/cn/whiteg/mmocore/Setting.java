@@ -32,7 +32,7 @@ public class Setting {
             final FileConfiguration newcon = YamlConfiguration.loadConfiguration(file);
             Set<String> keys = newcon.getKeys(true);
             for (String k : keys) {
-                if (config.isSet(k)) continue;
+                if (config.contains(k)) continue;
                 config.set(k,newcon.get(k));
                 MMOCore.logger.info("在配置文件新增值: " + k);
             }

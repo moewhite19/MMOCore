@@ -415,7 +415,7 @@ public class FileMan {
                     sender.sendMessage("创建新插件数据");
                     //转移插件数据
                     for (String key : dc.getConfig().getKeys(true)) {
-                        if (newDc.isSet(key)) continue;
+                        if (newDc.contarins(key)) continue;
                         newDc.set(key,dc.get(key));
                     }
                     newDc.set("NameOnceUsed",name); //设置曾用名
